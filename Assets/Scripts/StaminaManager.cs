@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StaminaManager : MonoBehaviour
@@ -7,73 +5,64 @@ public class StaminaManager : MonoBehaviour
     [SerializeField] private float maxStamina = 100f;
     [SerializeField] private float staminaRenewAmount = 20f;
 
-    private Dictionary<GameManager.Turn, Dictionary<AttackType, float>> playerStamina;
+    private float player1Stamina;
+    private float player2Stamina;
 
     public static StaminaManager Instance { get; private set; }
 
     private void Awake()
     {
         Instance = this;
-        InitializeStamina();
-    }
-
-    private void InitializeStamina()
-    {
-        playerStamina = new Dictionary<GameManager.Turn, Dictionary<AttackType, float>>();
-
-        foreach (GameManager.Turn turn in System.Enum.GetValues(typeof(GameManager.Turn)))
-        {
-            playerStamina[turn] = new Dictionary<AttackType, float>();
-
-            foreach (AttackType attackType in System.Enum.GetValues(typeof(AttackType)))
-            {
-                playerStamina[turn][attackType] = maxStamina;
-            }
-        }
+        player1Stamina = maxStamina;
+        player2Stamina = maxStamina;
     }
 
     public void RenewStamina(GameManager.Turn turn)
     {
-        foreach (AttackType attackType in System.Enum.GetValues(typeof(AttackType)))
-        {
-            playerStamina[turn][attackType] = Mathf.Clamp(playerStamina[turn][attackType] + staminaRenewAmount, 0f, maxStamina);
-        }
+        if (turn == GameManager.Turn.Player1)
+            player1Stamina += staminaRenewAmount;
+        else
+            player2Stamina += staminaRenewAmount;
     }
 
     public void ConsumeStamina(GameManager.Turn turn, AttackType attackType)
     {
         float staminaCost = GetStaminaCost(attackType);
-        playerStamina[turn][attackType] = Mathf.Clamp(playerStamina[turn][attackType] - staminaCost, 0f, maxStamina);
+
+        if (turn == GameManager.Turn.Player1)
+            player1Stamina -= staminaCost;
+        else
+            player2Stamina += staminaCost;
     }
 
-    public float GetStamina(GameManager.Turn turn, AttackType attackType)
+    public bool CanAfford(GameManager.Turn turn, AttackType attackType)
     {
-        return playerStamina[turn][attackType];
+        float staminaCost = GetStaminaCost(attackType);
+
+        if (turn == GameManager.Turn.Player1)
+            return player1Stamina >= staminaCost;
+        else
+            return player2Stamina >= staminaCost;
     }
 
     private float GetStaminaCost(AttackType attackType)
     {
         // Implement your logic to determine the stamina cost based on attack type
         // For simplicity, we're using constant values here.
-        switch (attackType)
+        return attackType switch
         {
-            case AttackType.Attack1:
-                return 10f;
-            case AttackType.Attack2:
-                return 20f;
-            case AttackType.Attack3:
-                return 30f;
-            default:
-                return 0f;
-        }
+            AttackType.RegularAttack => 10f,
+            AttackType.StrongAttack => 20f,
+            AttackType.WideAttack => 30f,
+            _ => 0f,
+        };
     }
 
     public enum AttackType
     {
-        None,
-        Attack1,
-        Attack2,
-        Attack3
+        RegularAttack,
+        StrongAttack,
+        WideAttack
     }
 }
 

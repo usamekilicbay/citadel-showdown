@@ -1,13 +1,26 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerProjectile : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    private bool isDone = false;
+
+    private void Update()
     {
-        if (other.gameObject.name == "AIController")
+        if (!isDone)
+            CameraController.Instance.FollowTransform(transform, 0.01f);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "AIController" || collision.gameObject.name == "Ground")
         {
+            isDone = true;
+            Task.Delay(1000);
             // Switch turn after a successful throw
             GameManager.Instance.SwitchTurn();
         }
+
+        Destroy(gameObject);
     }
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class PlayerCitadel : MonoBehaviour
 {
@@ -100,5 +99,7 @@ public class PlayerCitadel : MonoBehaviour
 
         // Apply throw force to the projectile
         projectileRb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
+
+        CameraController.Instance.ZoomOut();
     }
 }

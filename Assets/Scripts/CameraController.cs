@@ -1,49 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private float zoomOutSize = 8f;
     [SerializeField] private float zoomInSize = 5f;
     [SerializeField] private float zoomSpeed = 5f;
+    [SerializeField] private float followSpeed = 5f;
 
     private Camera cam;
-    private Vector3 originalPosition;
-    private bool isZooming = false;
 
-    private void Start()
-    {
-        cam = GetComponent<Camera>();
-        originalPosition = transform.position;
-    }
+    private static CameraController instance;
+    public static CameraController Instance => instance;
 
-    private void Update()
+    private void Awake()
     {
-        if (isZooming)
+        if (instance != null && instance != this)
         {
-            ZoomCamera();
+            Destroy(gameObject);
+            return;
         }
+
+        instance = this;
+        cam = Camera.main;
     }
 
     public void ZoomOut()
     {
-        isZooming = true;
+        cam.DOOrthoSize(zoomOutSize, zoomSpeed);
     }
 
-    public void ZoomIn()
+    public void ZoomIn(Transform target)
     {
-        isZooming = false;
-        cam.orthographicSize = zoomInSize;
-        transform.position = originalPosition;
+        cam.DOOrthoSize(zoomInSize, zoomSpeed);
+        FollowTransform(target, 1f);
     }
 
-    private void ZoomCamera()
+    public void FollowTransform(Transform target, float duration)
     {
-        float targetSize = isZooming ? zoomOutSize : zoomInSize;
-        Vector3 targetPosition = isZooming ? new Vector3(originalPosition.x, originalPosition.y, -10f) : originalPosition;
-
-        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetSize, Time.deltaTime * zoomSpeed);
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * zoomSpeed);
+        var targetPosition = new Vector3(target.position.x, target.position.y, -10f);
+        cam.transform.DOMove(targetPosition, duration).SetEase(Ease.OutQuad);
     }
 }
