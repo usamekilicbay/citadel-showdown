@@ -1,5 +1,6 @@
+using Cinemachine;
 using UnityEngine;
-using DG.Tweening;
+using static GameManager;
 
 public class CameraController : MonoBehaviour
 {
@@ -8,7 +9,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomSpeed = 5f;
     [SerializeField] private float followSpeed = 5f;
 
-    private Camera cam;
+    [SerializeField] CinemachineVirtualCamera projectileCamera;
+    [SerializeField] CinemachineVirtualCamera player1CitadelCamera;
+    [SerializeField] CinemachineVirtualCamera player2CitadelCamera;
 
     private static CameraController instance;
     public static CameraController Instance => instance;
@@ -22,23 +25,27 @@ public class CameraController : MonoBehaviour
         }
 
         instance = this;
-        cam = Camera.main;
+
+        projectileCamera = GameObject.Find("Projectile Camera").GetComponent<CinemachineVirtualCamera>();
+        player1CitadelCamera = GameObject.Find("Player 1 Citadel Camera").GetComponent<CinemachineVirtualCamera>();
+        player2CitadelCamera = GameObject.Find("Player 2 Citadel Camera").GetComponent<CinemachineVirtualCamera>();
     }
 
-    public void ZoomOut()
+    public void SwitchToProjectileCamera(Transform target)
     {
-        cam.DOOrthoSize(zoomOutSize, zoomSpeed);
+        projectileCamera.transform.SetPositionAndRotation(Vector3.zero, Quaternion.Euler(Vector3.zero));
+        projectileCamera.Follow = target;
+        projectileCamera.LookAt = target;
+
+        player1CitadelCamera.gameObject.SetActive(false);
+        player2CitadelCamera.gameObject.SetActive(false);
+        projectileCamera.gameObject.SetActive(true);
     }
 
-    public void ZoomIn(Transform target)
+    public void SwitchCitadelCamera(Turn turn)
     {
-        cam.DOOrthoSize(zoomInSize, zoomSpeed);
-        FollowTransform(target, 1f);
-    }
-
-    public void FollowTransform(Transform target, float duration)
-    {
-        var targetPosition = new Vector3(target.position.x, target.position.y, -10f);
-        cam.transform.DOMove(targetPosition, duration).SetEase(Ease.OutQuad);
+        projectileCamera.gameObject.SetActive(false);
+        player1CitadelCamera.gameObject.SetActive(turn == Turn.Player1);
+        player2CitadelCamera.gameObject.SetActive(turn == Turn.Player2);
     }
 }

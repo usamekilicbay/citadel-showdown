@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerCitadel : MonoBehaviour
+public class Player1Citadel : MonoBehaviour
 {
     private Vector3 startPosition;
     private Vector3 endPosition;
@@ -12,10 +12,15 @@ public class PlayerCitadel : MonoBehaviour
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private LineRenderer dragLine;
 
+    [SerializeField] private int maxHealth = 100;
+    private int currentHealth;
+
     private void Start()
     {
         dragLine = GetComponent<LineRenderer>();
         dragLine.enabled = false;
+
+        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -94,12 +99,23 @@ public class PlayerCitadel : MonoBehaviour
     {
         var spawnPosition = transform.position;
         spawnPosition.y += 2f;
-        GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+        var projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity)
+            .GetComponent<Projectile>();
+        projectile.Damage = 10;
         Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
 
         // Apply throw force to the projectile
         projectileRb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
+    }
 
-        CameraController.Instance.ZoomOut();
+    public void TakeDamage(int damageAmount)
+    {
+        currentHealth -= damageAmount;
+
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            GameManager.Instance.GameOver();
+        }
     }
 }
