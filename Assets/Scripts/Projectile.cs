@@ -16,20 +16,20 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        CameraController.Instance.SwitchToProjectileCamera(transform);
+        //CameraController.Instance.SwitchToProjectileCamera(transform);
     }
 
     private void Update()
     {
-        // Check if the velocity has changed from positive to negative
-        if (!hasReachedPeak && rb.velocity.y < 0 && lastVelocityY > 0)
-        {
-            // Projectile has likely reached its peak height, update mass
-            hasReachedPeak = true;
-            rb.gravityScale = 2f;
-        }
+        //// Check if the velocity has changed from positive to negative
+        //if (!hasReachedPeak && rb.velocity.y < 0 && lastVelocityY > 0)
+        //{
+        //    // Projectile has likely reached its peak height, update mass
+        //    hasReachedPeak = true;
+        //    rb.gravityScale = 2f;
+        //}
 
-        lastVelocityY = rb.velocity.y;
+        //lastVelocityY = rb.velocity.y;
 
         if (transform.position.y <= -10f)
             Vanish();

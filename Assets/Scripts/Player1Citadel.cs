@@ -2,33 +2,58 @@ using UnityEngine;
 
 public class Player1Citadel : MonoBehaviour
 {
-    private Vector3 startPosition;
-    private Vector3 endPosition;
+    private Vector3 startScreenPosition;
     private bool isDragging = false;
+
+    private Vector2 throwDirection;
+    private float throwForce;
+    private Vector2 spawnPos;
 
     [SerializeField] private float maxDragDistance = 3f;
     [SerializeField] private float maxThrowForce = 10f;
     [SerializeField] private float minThrowForce = 2f;
     [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private LineRenderer dragLine;
 
     [SerializeField] private int maxHealth = 100;
     private int currentHealth;
 
+    [SerializeField] private int numTrajectoryPoints = 10;
+    [SerializeField] private GameObject trajectoryPointPrefab;
+    private GameObject[] trajectoryPoints;
+    private int trajectoryPointIndex = 0;
+
+    private LineRenderer trajectoryLineRenderer;
+
     private void Start()
     {
-        dragLine = GetComponent<LineRenderer>();
-        dragLine.enabled = false;
-
+        spawnPos = transform.position;
+        spawnPos.y += 2;
         currentHealth = maxHealth;
+        InitializeTrajectoryPoints();
+
+        trajectoryLineRenderer = GetComponent<LineRenderer>();
+        trajectoryLineRenderer.positionCount = 2;
+        trajectoryLineRenderer.enabled = false;
+    }
+
+    private void InitializeTrajectoryPoints()
+    {
+        trajectoryPoints = new GameObject[numTrajectoryPoints];
+        for (int i = 0; i < numTrajectoryPoints; i++)
+        {
+            trajectoryPoints[i] = Instantiate(trajectoryPointPrefab);
+            trajectoryPoints[i].SetActive(false);
+        }
     }
 
     private void Update()
     {
-        if (GameManager.Instance.CurrentTurn == GameManager.Turn.Player1)
+        if (GameManager.Instance.CurrentTurn != GameManager.Turn.Player1)
         {
-            HandlePlayerInput();
+            return;
         }
+
+        HandlePlayerInput();
     }
 
     private void HandlePlayerInput()
@@ -45,67 +70,95 @@ public class Player1Citadel : MonoBehaviour
         if (isDragging)
         {
             UpdateDrag();
+            UpdateTrajectory();
+        }
+        else
+        {
+            HideTrajectory();
         }
     }
 
     private void OnDragStart()
     {
         isDragging = true;
-        startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        startPosition.z = 0;
+        startScreenPosition = Input.mousePosition;
+        startScreenPosition.z = 10; // Depth of the Camera
+        startScreenPosition = Camera.main.ScreenToWorldPoint(startScreenPosition);
+    }
 
-        dragLine.enabled = true;
-        dragLine.SetPosition(0, startPosition);
-        dragLine.SetPosition(1, startPosition);
+    private void UpdateDrag()
+    {
+        Vector3 currentPosition = Input.mousePosition;
+        currentPosition.z = 10; // Depth of the Camera
+        currentPosition = Camera.main.ScreenToWorldPoint(currentPosition);
+
+        // Check if the drag distance exceeds the threshold
+        Vector3 dragVector = startScreenPosition - currentPosition;
+        float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, maxDragDistance);
+
+        throwDirection = dragVector.normalized;
+        throwForce = Mathf.Lerp(minThrowForce, maxThrowForce, dragDistance / maxDragDistance);
+
+        UpdateTrajectoryLine(startScreenPosition, currentPosition);
     }
 
     private void OnDragEnd()
     {
         isDragging = false;
-        endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        endPosition.z = 0;
 
-        dragLine.enabled = false;
-
-        Vector2 dragVector = startPosition - endPosition;
-        float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, maxDragDistance);
-
-        // Calculate throw force based on drag distance and angle
-        float throwForce = Mathf.Lerp(minThrowForce, maxThrowForce, dragDistance / maxDragDistance);
-        Vector2 throwDirection = dragVector.normalized;
-
-        // Spawn and throw a projectile
-        SpawnAndThrowProjectile(throwDirection, throwForce);
+        SpawnAndThrowProjectile(transform.position);
+        trajectoryLineRenderer.enabled = false;
     }
 
-    private void UpdateDrag()
+    private void SpawnAndThrowProjectile(Vector3 spawnPosition)
     {
-        Vector3 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        currentPosition.z = 0;
+        spawnPosition.y += 2f;
+        GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+        Projectile projectileComponent = projectile.GetComponent<Projectile>();
+        projectileComponent.Damage = 10;
 
-        // Check if the drag distance exceeds the threshold
-        Vector3 dragVector = startPosition - currentPosition;
-        float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, maxDragDistance);
-        if (dragDistance >= maxDragDistance)
+        Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
+        projectileRb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
+    }
+
+    private void UpdateTrajectory()
+    {
+        float timeStep = 0.1f;
+        for (int i = 0; i < numTrajectoryPoints; i++)
         {
-            dragVector = dragVector.normalized * maxDragDistance;
+            float time = i * timeStep;
+            Vector3 pointPosition = CalculatePointPosition(spawnPos, throwDirection, throwForce, time);
+            trajectoryPoints[i].transform.position = pointPosition;
+            trajectoryPoints[i].SetActive(true);
+        }
+    }
+
+    private void UpdateTrajectoryLine(Vector3 start, Vector3 current)
+    {
+        Vector3 dragVector = start - current;
+        float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, maxDragDistance);
+        Vector3 clampedEnd = start - dragVector.normalized * dragDistance;
+
+        trajectoryLineRenderer.enabled = true;
+        trajectoryLineRenderer.SetPosition(0, start);
+        trajectoryLineRenderer.SetPosition(1, clampedEnd);
+    }
+
+    private Vector3 CalculatePointPosition(Vector3 initialPosition, Vector2 direction, float force, float time)
+    {
+        float gravity = Physics2D.gravity.y;
+        Vector2 displacement = direction * force * time + 0.5f * Vector2.up * gravity * time * time;
+        return initialPosition + new Vector3(displacement.x, displacement.y, 0);
+    }
+
+    private void HideTrajectory()
+    {
+        foreach (GameObject point in trajectoryPoints)
+        {
+            point.SetActive(false);
         }
 
-        // Update the line renderer to visualize the drag
-        dragLine.SetPosition(1, startPosition - dragVector);
-    }
-
-    private void SpawnAndThrowProjectile(Vector2 throwDirection, float throwForce)
-    {
-        var spawnPosition = transform.position;
-        spawnPosition.y += 2f;
-        var projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity)
-            .GetComponent<Projectile>();
-        projectile.Damage = 10;
-        Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
-
-        // Apply throw force to the projectile
-        projectileRb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
+        trajectoryLineRenderer.enabled = false;
     }
 
     public void TakeDamage(int damageAmount)
