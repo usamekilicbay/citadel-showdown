@@ -20,7 +20,6 @@ public class Player1Citadel : MonoBehaviour
     [SerializeField] private int numTrajectoryPoints = 10;
     [SerializeField] private GameObject trajectoryPointPrefab;
     private GameObject[] trajectoryPoints;
-    private int trajectoryPointIndex = 0;
 
     private LineRenderer trajectoryLineRenderer;
 

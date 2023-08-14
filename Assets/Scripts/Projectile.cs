@@ -16,7 +16,7 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        //CameraController.Instance.SwitchToProjectileCamera(transform);
+        CameraController.Instance.SwitchToProjectileCamera(transform);
     }
 
     private void Update()
