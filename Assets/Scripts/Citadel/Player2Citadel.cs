@@ -1,22 +1,28 @@
+using CitadelShowdown.DI;
 using CitadelShowdown.UI.Citadel;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 namespace CitadelShowdown.Citadel
 {
     public class Player2Citadel : CitadelBase
     {
-        public static Player2Citadel Instance { get; private set; }
+        private Player1Citadel _playerCitadel;
 
-        private GameObject playerCitadel;
+        [Inject]
+        public void Construct(CoreLoopFacade coreLoopFacade,
+            UIPlayer2Citadell uiPlayer2Citadel,
+            Player1Citadel player1Citadel)
+        {
+            _playerCitadel = player1Citadel;
+            uiCitadel = uiPlayer2Citadel;
+        }
 
         protected override void Start()
         {
             base.Start();
             currentHealth = maxHealth;
-
-            playerCitadel = FindAnyObjectByType<Player1Citadel>().gameObject;
-            uiCitadel = FindAnyObjectByType<UIPlayer2Citadel>();
 
             UpdateUI();
         }

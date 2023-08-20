@@ -1,6 +1,5 @@
 using Cinemachine;
 using UnityEngine;
-using static CitadelShowdown.Managers.GameManager;
 
 namespace CitadelShowdown.Managers
 {
@@ -15,19 +14,8 @@ namespace CitadelShowdown.Managers
         [SerializeField] CinemachineVirtualCamera player1CitadelCamera;
         [SerializeField] CinemachineVirtualCamera player2CitadelCamera;
 
-        private static CameraManager instance;
-        public static CameraManager Instance => instance;
-
         private void Awake()
-        {
-            if (instance != null && instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            instance = this;
-
+        { 
             projectileCamera = GameObject.Find("Projectile Camera").GetComponent<CinemachineVirtualCamera>();
             player1CitadelCamera = GameObject.Find("Player 1 Citadel Camera").GetComponent<CinemachineVirtualCamera>();
             player2CitadelCamera = GameObject.Find("Player 2 Citadel Camera").GetComponent<CinemachineVirtualCamera>();

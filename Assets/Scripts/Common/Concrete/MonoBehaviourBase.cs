@@ -10,7 +10,7 @@ namespace CitadelShowdown.DI
 {
     public class MonoBehaviourBase : MonoBehaviour
     {
-        protected CoreLoopFacade coreLoopFacade;
+        protected CoreLoopFacade coreLoopFacade { get; private set; }
 
         [Inject]
         public virtual void Construct(CoreLoopFacade coreLoopFacade)

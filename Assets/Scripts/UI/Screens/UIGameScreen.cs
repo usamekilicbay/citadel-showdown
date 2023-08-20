@@ -43,23 +43,23 @@ namespace CitadelShowdown.UI.Screen
 
         private ConfigurationManager _configurationManager;
         private CameraManager _cameraManager;
-        private AudioManager _audioManager;
+        //private AudioManager _audioManager;
 
         [Inject]
         public void Construct(ConfigurationManager configurationManager,
-            CameraManager cameraManager,
-            AudioManager audioManager)
+            CameraManager cameraManager
+            /*AudioManager audioManager*/)
         {
             _configurationManager = configurationManager;
             _cameraManager = cameraManager;
-            _audioManager = audioManager;
+            //_audioManager = audioManager;
         }
 
         #endregion
 
         private void Awake()
         {
-            Setup();
+            //Setup();
         }
 
         //#region Remove
@@ -165,7 +165,7 @@ namespace CitadelShowdown.UI.Screen
 
         public void Renew()
         {
-            background.color = BackgroundInitialColor;
+            //background.color = BackgroundInitialColor;
             //UpdateScoreText(0);
             //UpdateComboCounterText(0);
             //UpdateProgressBar(0);
@@ -176,7 +176,7 @@ namespace CitadelShowdown.UI.Screen
         private void Setup()
         {
             BackgroundInitialColor = background.color;
-            progressBar.maxValue = _configurationManager.GameConfigs.ProgressMilestone;
+            //progressBar.maxValue = _configurationManager.GameConfigs.ProgressMilestone;
 
             _scoreTextInitialSize = scoreText.rectTransform.sizeDelta;
             _progressIconInitialSize = progressIcon.rectTransform.sizeDelta;

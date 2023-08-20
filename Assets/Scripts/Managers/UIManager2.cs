@@ -1,6 +1,6 @@
 namespace CitadelShowdown.Managers
 {
-    public class UIManager : UIManagerBase
+    public class UIManager2 : UIManagerBase
     {
     }
 }

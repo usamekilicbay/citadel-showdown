@@ -2,25 +2,33 @@ using UnityEngine;
 
 namespace CitadelShowdown.Configs
 {
+    using UnityEngine;
+
     [CreateAssetMenu(fileName = "GameConfigs", menuName = "Configs/Game Configs")]
     public class GameConfigs : ScriptableObject
     {
-        [Tooltip("The default time period (in seconds) given to answer a question.")]
-        [SerializeField] private float defaultAnswerPeriod;
-        
-        [Tooltip("The default time period (in seconds) given to trigger or continue to the combo.")]
-        [SerializeField] private float defaultComboTriggerPeriod;
+        [Tooltip("The maximum health for the player.")]
+        [SerializeField] private float maxHealth;
 
-        [Tooltip("The milestone value at which the player's progress is updated.")]
-        [SerializeField] private int progressMilestone;
+        [Tooltip("The maximum stamina for the player.")]
+        [SerializeField] private float maxEnergy;
 
-        // Getter property for the default answer period.
-        public float DefaultAnswerPeriod => defaultAnswerPeriod;
-        
-        // Getter property for the default combo trigger period.
-        public float DefaultComboTriggerPeriod => defaultComboTriggerPeriod;
+        [Tooltip("The rate at which stamina renews (per second).")]
+        [SerializeField] private float staminaRenewRate;
 
-        // Getter property for the progress milestone.
-        public int ProgressMilestone => progressMilestone;
+        [Tooltip("Attack configurations for different attack types.")]
+        [SerializeField] private AttackConfigs attackConfigs;
+
+        // Getter property for max health.
+        public float MaxHealth => maxHealth;
+
+        // Getter property for max stamina.
+        public float MaxEnergy => maxEnergy;
+
+        // Getter property for stamina renew rate.
+        public float EnergyRenewRate => staminaRenewRate;
+
+        // Getter property for attack configurations.
+        public AttackConfigs AttackConfigs => attackConfigs;
     }
 }

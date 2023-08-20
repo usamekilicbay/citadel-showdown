@@ -28,15 +28,15 @@ namespace CitadelShowdown.Managers
             _progress++;
             //_gameScreen.UpdateProgressBar(_progress);
 
-            if (HasReachedToMilestone())
+            //if (HasReachedToMilestone())
                 Milestone();
         }
 
-        public int RemainingToMilestone()
-            => _configurationManager.GameConfigs.ProgressMilestone - _progress;
+        //public int RemainingToMilestone()
+            //=> _configurationManager.GameConfigs.ProgressMilestone - _progress;
 
-        public bool HasReachedToMilestone()
-           => _progress == _configurationManager.GameConfigs.ProgressMilestone;
+        //public bool HasReachedToMilestone()
+           //=> _progress == _configurationManager.GameConfigs.ProgressMilestone;
 
         public async Task Complete(bool isSuccessful = true)
         {

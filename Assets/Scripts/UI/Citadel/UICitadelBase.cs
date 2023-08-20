@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
 
-
 namespace CitadelShowdown.UI.Citadel
 {
     public abstract class UICitadelBase : MonoBehaviour
@@ -16,21 +15,21 @@ namespace CitadelShowdown.UI.Citadel
             healthText.SetText("Health: " + health);
         }
 
-        public void UpdateStamina(float stamina)
+        public void UpdateEnergy(float stamina)
         {
-            staminaText.SetText("Stamina: " + stamina);
+            staminaText.SetText("Energy: " + stamina);
         }
 
         public void UpdateThrowForce(float throwForce, float minThrowForce, float maxThrowForce)
         {
             float throwForcePercentage = (throwForce - minThrowForce) / (maxThrowForce - minThrowForce) * 100f;
-            throwForceText.SetText($"{throwForcePercentage:F0} % \n Force");
+            throwForceText.SetText($"{throwForcePercentage:F0}%");
         }
 
         public void UpdateThrowAngle(Vector2 throwDirection)
         {
             float throwAngle = Mathf.Rad2Deg * Mathf.Atan2(throwDirection.y, throwDirection.x);
-            throwAngleText.SetText($"{throwAngle:F1} ° \n Angle");
+            throwAngleText.SetText($"{throwAngle:F1}°");
         }
     }
 }

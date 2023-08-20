@@ -1,4 +1,7 @@
+using CitadelShowdown.Citadel;
 using CitadelShowdown.Managers;
+using CitadelShowdown.ProjectileNamespace;
+using CitadelShowdown.UI.Citadel;
 using CitadelShowdown.UI.Dialog;
 using CitadelShowdown.UI.Screen;
 using Zenject;
@@ -20,47 +23,81 @@ namespace CitadelShowdown.DI
                 .AsSingle();
 
             Container
-                .Bind<AudioManager>()
+                .Bind<TrajectoryManager>()
                 .FromComponentInHierarchy()
                 .AsSingle();
+
+            //Container
+            //    .Bind<AudioManager>()
+            //    .FromComponentInHierarchy()
+            //    .AsSingle();
 
             Container
                 .Bind<CameraManager>()
                 .FromComponentInHierarchy()
                 .AsSingle();
 
-            Container
-                .Bind<PlayerStatsManager>()
-                .To<PlayerStatsManager>()
-                .AsSingle();
+            //Container
+            //    .Bind<PlayerStatsManager>()
+            //    .To<PlayerStatsManager>()
+            //    .AsSingle();
 
-            Container
-                .Bind<SaveManager>()
-                .To<SaveManager>()
-                .AsSingle();
+            //Container
+            //    .Bind<SaveManager>()
+            //    .To<SaveManager>()
+            //    .AsSingle();
 
-            Container
-                .Bind<ICurrencyManager>()
-                .To<CurrencyManager>()
-            .AsSingle();
+            //Container
+            //    .Bind<ICurrencyManager>()
+            //    .To<CurrencyManager>()
+            //.AsSingle();
 
-            Container
-                .Bind<ScoreManager>()
-                .To<ScoreManager>()
-                .AsSingle();
+            //Container
+            //    .Bind<ScoreManager>()
+            //    .To<ScoreManager>()
+            //    .AsSingle();
 
-            Container
-                .Bind<LevelManager>()
-                .To<LevelManager>()
-                .AsSingle();
+            //Container
+            //    .Bind<LevelManager>()
+            //    .To<LevelManager>()
+            //    .AsSingle();
 
-            Container
-                .Bind<ProgressManager>()
-                .To<ProgressManager>()
-                .AsSingle();
+            //Container
+            //    .Bind<ProgressManager>()
+            //    .To<ProgressManager>()
+            //    .AsSingle();
 
             Container
                 .Bind<CoreLoopFacade>()
+                .AsSingle();
+
+            Container
+                .Bind<UIScreenFacade>()
+                .AsSingle();
+
+            Container
+                .Bind<Player1Citadel>()
+                .FromComponentInHierarchy()
+                .AsSingle();
+
+            Container
+                .Bind<Player2Citadel>()
+                .FromComponentInHierarchy()
+                .AsSingle();
+
+            Container
+                .Bind<UIPlayer1Citadell>()
+                .FromComponentInHierarchy()
+                .AsSingle();
+
+            Container
+                .Bind<UIPlayer2Citadell>()
+                .FromComponentInHierarchy()
+                .AsSingle();
+
+            Container
+                .Bind<Projectile>()
+                .FromComponentInHierarchy()
                 .AsSingle();
 
             #region UI

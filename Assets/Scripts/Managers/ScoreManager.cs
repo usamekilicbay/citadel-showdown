@@ -43,7 +43,7 @@ namespace CitadelShowdown.Managers
         public void AddScore(float replyTimeSpan, bool isDoubleScore = false)
         {
             var tempScore = _reqularQuestionScore;
-            if (IsPerfectReplyTime(replyTimeSpan))
+            //if (IsPerfectReplyTime(replyTimeSpan))
             {
                 tempScore = _perfectScore;
                 _comboCounter++;
@@ -54,7 +54,7 @@ namespace CitadelShowdown.Managers
                 Debug.Log($"X{_comboCounter}");
                 //_gameScreen.UpdateComboCounterText(_comboCounter);
             }
-            else
+            //else
             {
                 _comboCounter = 1;
                 //_gameScreen.UpdateComboCounterText(_comboCounter);
@@ -86,15 +86,15 @@ namespace CitadelShowdown.Managers
 
             if (!isSucessful)
             {
-                var wastedCount = _progressManager.RemainingToMilestone();
-                scoreKeys.ToList().RemoveLast(wastedCount);
+                //var wastedCount = _progressManager.RemainingToMilestone();
+                //scoreKeys.ToList().RemoveLast(wastedCount);
             }
 
             foreach (var key in scoreKeys)
             {
                 var scores = _scoreStorage[key];
 
-                await _resultScreen.UpdateScoreTextAsync(scores);
+                //await _resultScreen.UpdateScoreTextAsync(scores);
                 _score += scores.Sum();
             }
         }
@@ -107,7 +107,7 @@ namespace CitadelShowdown.Managers
 
         public async Task Complete(bool isSuccessful = true)
         {
-            await _resultScreen.UpdateComboText(15);
+            //await _resultScreen.UpdateComboText(15);
             await UpdateScoreAsync(true);
 
             //UpdateScore(isSuccessful);
@@ -118,7 +118,7 @@ namespace CitadelShowdown.Managers
             _scoreStorage.Add(Key.Score.Question, new List<int>());
         }
 
-        private bool IsPerfectReplyTime(float replyTimeSpan)
-           => replyTimeSpan >= _configurationManager.GameConfigs.DefaultComboTriggerPeriod;
+        //private bool IsPerfectReplyTime(float replyTimeSpan)
+           //=> replyTimeSpan >= _configurationManager.GameConfigs.DefaultComboTriggerPeriod;
     }
 }

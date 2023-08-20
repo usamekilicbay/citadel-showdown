@@ -7,7 +7,7 @@ using Zenject;
 
 namespace CitadelShowdown.ProjectileNamespace
 {
-    public class Projectile : MonoBehaviourBase
+    public class Projectile : MonoBehaviour
     {
         public int Damage;
         [SerializeField] private Rigidbody2D rb;
@@ -17,20 +17,44 @@ namespace CitadelShowdown.ProjectileNamespace
         private float lastVelocityY = 0f;
         private bool isUsed = false;
 
-        private void Awake()
+        private CoreLoopFacade _coreLoopFacade;
+        private CameraManager _cameraManager;
+
+        [Inject]
+        public void Construct(CoreLoopFacade coreLoopFacade,
+             CameraManager cameraManager)
         {
-            rb = GetComponent<Rigidbody2D>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            _coreLoopFacade = coreLoopFacade;
+            _cameraManager = cameraManager;
         }
 
-        private void Start()
+        private void Awake()
         {
+            Setup();
+        }
+
+        public void Setup()
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            Renew();
+        }
+
+        public void UpdateThisBaby(Vector2 launchPos)
+        {
+            transform.position = launchPos;
             Renew();
         }
 
         public void Renew()
         {
-            rb.gravityScale = 0;
+            gameObject.TryGetComponent(out Rigidbody2D rb);
+
+            this.rb = rb == null 
+                ? gameObject.AddComponent<Rigidbody2D>() 
+                : rb;
+
+            this.rb.gravityScale = 0;
+            isUsed = false;
         }
 
         public void Throw(Vector2 throwDirection, float throwForce, TurnType attacker)
@@ -40,7 +64,7 @@ namespace CitadelShowdown.ProjectileNamespace
             rb.gravityScale = 1;
             rb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
 
-            CameraManager.Instance.SwitchToProjectileCamera(transform);
+            _cameraManager.SwitchToProjectileCamera(transform);
             //Time.timeScale = 0.3f;
         }
 
@@ -67,7 +91,7 @@ namespace CitadelShowdown.ProjectileNamespace
         {
             if (collision.gameObject.name == "Player 1 Citadel" || collision.gameObject.name == "Player 2 Citadel")
             {
-                if (coreLoopFacade.GameManager.CurrentTurn == TurnType.Player1)
+                if (_coreLoopFacade.GameManager.CurrentTurn == TurnType.Player1)
                 {
                     if (collision.gameObject.TryGetComponent(out Player2Citadel victim))
                         await victim.TakeDamageAsync(Damage);
@@ -91,17 +115,14 @@ namespace CitadelShowdown.ProjectileNamespace
 
             isUsed = true;
 
-            Destroy(spriteRenderer);
+            spriteRenderer.enabled = false;
             Destroy(rb);
 
-            await coreLoopFacade.GameManager.MMFPlayerProjectile.PlayFeedbacksTask(transform.position);
-
+            await _coreLoopFacade.GameManager.MMFPlayerProjectile.PlayFeedbacksTask(transform.position);
 
             //await Task.Delay(1000);
             // Switch turn after a successful throw
-            coreLoopFacade.GameManager.SwitchTurn();
-
-            Destroy(gameObject);
+            _coreLoopFacade.SwitchTurn();
         }
     }
 }

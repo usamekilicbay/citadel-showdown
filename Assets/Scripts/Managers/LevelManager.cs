@@ -59,7 +59,7 @@ namespace CitadelShowdown.Managers
             RequiredExp = TempRequiredExp;
             Level = TempLevel;
 
-            await _resultScreen.UpdateLevel(Exp, Level);
+            //await _resultScreen.UpdateLevel(Exp, Level);
         }
     }
 }

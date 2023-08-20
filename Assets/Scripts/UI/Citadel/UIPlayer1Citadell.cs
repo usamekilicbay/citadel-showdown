@@ -1,7 +1,7 @@
 
 namespace CitadelShowdown.UI.Citadel
 {
-    public class UIPlayer1Citadel : UICitadelBase
+    public class UIPlayer1Citadell : UICitadelBase
     {
     }
 }

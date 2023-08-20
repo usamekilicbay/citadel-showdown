@@ -1,5 +1,4 @@
 using CitadelShowdown.DI;
-using CitadelShowdown.Managers;
 using CitadelShowdown.UI.Citadel;
 using UnityEngine;
 using Zenject;
@@ -10,22 +9,15 @@ namespace CitadelShowdown.Citadel
     {
         private Vector3 dragStartScreenPosition;
 
-        private CoreLoopFacade _loopFacade;
-
-        public override void Construct(CoreLoopFacade coreLoopFacade)
+        [Inject]
+        public void Construct(UIPlayer1Citadell uiPlayer1Citadel)
         {
-            base.Construct(coreLoopFacade);
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            uiCitadel = FindAnyObjectByType<UIPlayer1Citadel>();
+            uiCitadel = uiPlayer1Citadel;
         }
 
         private void Update()
         {
-            if (coreLoopFacade.GameManager.CurrentTurn != TurnType.Player1)
+            if (coreLoopFacade.CurrentTurn != TurnType.Player1)
             {
                 return;
             }
@@ -47,12 +39,7 @@ namespace CitadelShowdown.Citadel
             if (isDragging)
             {
                 UpdateDrag();
-                UpdateTrajectory();
                 UpdateUI();
-            }
-            else
-            {
-                HideTrajectory();
             }
         }
 
@@ -78,18 +65,22 @@ namespace CitadelShowdown.Citadel
             throwDirection = dragVector.normalized;
             throwForce = Mathf.Lerp(minThrowForce, maxThrowForce, dragDistance / maxDragDistance);
 
-            UpdateTrajectoryLine(dragStartScreenPosition, currentPosition);
+
+            var perc = (throwForce - minThrowForce) / (maxThrowForce - minThrowForce) * 100f;
+            Debug.Log($"%{perc}");
+
+            trajectoryManager.UpdateTrajectoryLine(dragStartScreenPosition, currentPosition);
+            trajectoryManager.UpdateTrajectory(throwDirection, perc, transform);
         }
 
         private void OnDragEnd()
         {
             isDragging = false;
 
-            SpendStamina((int)(throwForce * 2f)); // Adjust the stamina cost as needed
-
-            trajectoryLineRenderer.enabled = false;
+            SpendEnergy((int)(throwForce * 2f)); // Adjust the stamina cost as needed
 
             ThrowProjectile();
+            trajectoryManager.HideTrajectory();
         }
     }
 }

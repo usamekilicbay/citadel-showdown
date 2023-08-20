@@ -28,8 +28,8 @@ namespace CitadelShowdown.Managers
 
         public async Task Complete(bool isSuccessful = true)
         {
-            await _resultScreen.UpdateQuestionText(13);
-            await _resultScreen.UpdateComboText(4);
+            //await _resultScreen.UpdateQuestionText(13);
+            //await _resultScreen.UpdateComboText(4);
         }
     }
 }

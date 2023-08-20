@@ -1,4 +1,6 @@
+using Assets.Scripts.Common.Types;
 using CitadelShowdown.Managers;
+using System.Linq;
 using Zenject;
 
 namespace CitadelShowdown.DI
@@ -16,7 +18,12 @@ namespace CitadelShowdown.DI
             ConfigurationManager = configurationManager;
         }
 
-        public TurnType GetCurrentTurn()
+        public TurnType CurrentTurn
             => GameManager.CurrentTurn;
+
+        public void SwitchTurn()
+        {
+            GameManager.SwitchTurn();
+        }
     }
 }
