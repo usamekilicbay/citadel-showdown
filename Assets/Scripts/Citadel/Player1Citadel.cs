@@ -1,4 +1,3 @@
-using CitadelShowdown.DI;
 using CitadelShowdown.UI.Citadel;
 using UnityEngine;
 using Zenject;
@@ -29,17 +28,20 @@ namespace CitadelShowdown.Citadel
         {
             if (Input.GetMouseButtonDown(0))
             {
+                uiCitadel.ToggleIndicators(true);
                 OnDragStart();
             }
             else if (Input.GetMouseButtonUp(0))
             {
+                uiCitadel.ToggleIndicators(false);
                 OnDragEnd();
             }
 
             if (isDragging)
             {
                 UpdateDrag();
-                UpdateUI();
+                uiCitadel.UpdateThrowForce(throwForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce);
+                uiCitadel.UpdateThrowAngle(throwDirection);
             }
         }
 
@@ -60,13 +62,12 @@ namespace CitadelShowdown.Citadel
 
             // Check if the drag distance exceeds the threshold
             Vector3 dragVector = dragStartScreenPosition - currentPosition;
-            float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, maxDragDistance);
+            float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
 
             throwDirection = dragVector.normalized;
-            throwForce = Mathf.Lerp(minThrowForce, maxThrowForce, dragDistance / maxDragDistance);
+            throwForce = Mathf.Lerp(coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce, dragDistance / coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
 
-
-            var perc = (throwForce - minThrowForce) / (maxThrowForce - minThrowForce) * 100f;
+            var perc = (throwForce - coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce) / (coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce - coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce) * 100f;
             Debug.Log($"%{perc}");
 
             trajectoryManager.UpdateTrajectoryLine(dragStartScreenPosition, currentPosition);

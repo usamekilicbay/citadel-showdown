@@ -47,6 +47,8 @@ namespace CitadelShowdown.ProjectileNamespace
 
         public void Renew()
         {
+            spriteRenderer.enabled = true;
+
             gameObject.TryGetComponent(out Rigidbody2D rb);
 
             this.rb = rb == null 

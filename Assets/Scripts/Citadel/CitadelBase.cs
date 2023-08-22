@@ -10,16 +10,11 @@ namespace CitadelShowdown.Citadel
 {
     public abstract class CitadelBase : MonoBehaviour
     {
-        [SerializeField] protected float maxDragDistance = 3f;
-        [SerializeField] protected float maxThrowForce = 10f;
-        [SerializeField] protected float minThrowForce = 0f;
-        [SerializeField] protected GameObject projectilePrefab;
-        [SerializeField] protected float maxHealth = 100;
-
         [SerializeField] protected float currentHealth;
         [SerializeField] protected float currentEnergy;
         [SerializeField] protected Vector2 throwDirection;
         [SerializeField] protected float throwForce;
+        [SerializeField] protected GameObject projectilePrefab;
         [SerializeField] protected Vector2 spawnPos;
 
         protected UICitadelBase uiCitadel;
@@ -51,13 +46,18 @@ namespace CitadelShowdown.Citadel
             spawnPos.y += 2;
             currentHealth = coreLoopFacade.ConfigurationManager.GameConfigs.MaxHealth;
             currentEnergy = coreLoopFacade.ConfigurationManager.GameConfigs.MaxEnergy;
+            uiCitadel.UpdateHealthText(currentHealth);
+            uiCitadel.UpdateEnergyText(currentEnergy);
+            uiCitadel.ToggleIndicators(false);
         }
 
         public void Renew()
         {
             currentHealth = coreLoopFacade.ConfigurationManager.GameConfigs.MaxHealth;
             currentEnergy = coreLoopFacade.ConfigurationManager.GameConfigs.MaxEnergy;
-            UpdateUI();
+            uiCitadel.UpdateHealthText(currentHealth);
+            uiCitadel.UpdateEnergyText(currentEnergy);
+            uiCitadel.ToggleIndicators(false);
         }
 
         protected void SpawnProjectile()
@@ -78,14 +78,14 @@ namespace CitadelShowdown.Citadel
             currentEnergy = Mathf.Min(currentEnergy + coreLoopFacade.ConfigurationManager.GameConfigs.EnergyRenewRate,
                 coreLoopFacade.ConfigurationManager.GameConfigs.MaxEnergy);
 
-            UpdateUI();
+            uiCitadel.UpdateEnergyText(currentEnergy);
         }
 
         protected void SpendEnergy(int amount)
         {
             currentEnergy = Mathf.Max(currentEnergy - amount, 0);
 
-            UpdateUI();
+            uiCitadel.UpdateEnergyText(currentEnergy);
         }
 
         public async Task TakeDamageAsync(int damageAmount)
@@ -98,15 +98,7 @@ namespace CitadelShowdown.Citadel
                 await coreLoopFacade.GameManager.CompleteRun();
             }
 
-            UpdateUI();
-        }
-
-        protected void UpdateUI()
-        {
-            uiCitadel.UpdateHealth(currentHealth);
-            uiCitadel.UpdateEnergy(currentEnergy);
-            uiCitadel.UpdateThrowForce(throwForce, minThrowForce, maxThrowForce);
-            uiCitadel.UpdateThrowAngle(throwDirection);
+            uiCitadel.UpdateHealthText(currentHealth);
         }
     }
 }

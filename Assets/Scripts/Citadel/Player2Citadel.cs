@@ -11,20 +11,11 @@ namespace CitadelShowdown.Citadel
         private Player1Citadel _playerCitadel;
 
         [Inject]
-        public void Construct(CoreLoopFacade coreLoopFacade,
-            UIPlayer2Citadell uiPlayer2Citadel,
+        public void Construct(UIPlayer2Citadell uiPlayer2Citadel,
             Player1Citadel player1Citadel)
         {
             _playerCitadel = player1Citadel;
             uiCitadel = uiPlayer2Citadel;
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            currentHealth = maxHealth;
-
-            UpdateUI();
         }
 
         public async void SimulateAITurn()
@@ -55,7 +46,7 @@ namespace CitadelShowdown.Citadel
         private float CalculateThrowForce()
         {
             // Calculate a random throw force within the specified range
-            float throwForce = Random.Range(minThrowForce, maxThrowForce);
+            float throwForce = Random.Range(coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce);
 
             return throwForce;
         }

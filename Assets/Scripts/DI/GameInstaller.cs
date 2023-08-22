@@ -4,6 +4,8 @@ using CitadelShowdown.ProjectileNamespace;
 using CitadelShowdown.UI.Citadel;
 using CitadelShowdown.UI.Dialog;
 using CitadelShowdown.UI.Screen;
+using System.Collections.Generic;
+using System.Linq;
 using Zenject;
 
 namespace CitadelShowdown.DI
@@ -110,6 +112,11 @@ namespace CitadelShowdown.DI
             var screens = FindObjectsOfType<UIScreenBase>(true);
             foreach (var screen in screens)
                 Container.Bind(screen.GetType()).FromComponentsInHierarchy().AsSingle();
+
+            Container
+                .Bind<List<UIScreenBase>>()
+                .FromInstance(screens.ToList())
+                .AsSingle();
 
             var dialogs = FindObjectsOfType<UIDialogBase>(true);
             foreach (var dialog in dialogs)

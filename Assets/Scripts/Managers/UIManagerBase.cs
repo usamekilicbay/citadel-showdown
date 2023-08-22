@@ -1,8 +1,11 @@
+using CitadelShowdown.DI;
+using CitadelShowdown.ProjectileNamespace;
 using CitadelShowdown.UI.Dialog;
 using CitadelShowdown.UI.Screen;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 namespace CitadelShowdown.Managers
 {
@@ -11,10 +14,29 @@ namespace CitadelShowdown.Managers
         [SerializeField] private UIScreenBase firstScreen;
 
         private UIScreenBase _activeScreen;
+
         private List<UIDialogBase> _activeDialogs = new();
+        private List<UIScreenBase> _screens;
+
+        [Inject]
+        public void Construct(List<UIScreenBase> screens)
+        {
+            _screens = screens;
+        }
 
         private void Awake()
         {
+            AdjustInitialScreen();
+        }
+
+        public void AdjustInitialScreen()
+        {
+            _screens.ForEach(x =>
+            {
+                if (x != firstScreen)
+                    x.Hide();
+            });
+
             ShowScreen(firstScreen);
         }
 

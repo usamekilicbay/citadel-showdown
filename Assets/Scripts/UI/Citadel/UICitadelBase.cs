@@ -9,15 +9,21 @@ namespace CitadelShowdown.UI.Citadel
         [SerializeField] private TextMeshProUGUI staminaText;
         [SerializeField] private TextMeshProUGUI throwForceText;
         [SerializeField] private TextMeshProUGUI throwAngleText;
+        [SerializeField] private GameObject throwIndicator;
 
-        public void UpdateHealth(float health)
+        public void UpdateHealthText(float health)
         {
             healthText.SetText("Health: " + health);
         }
 
-        public void UpdateEnergy(float stamina)
+        public void UpdateEnergyText(float stamina)
         {
             staminaText.SetText("Energy: " + stamina);
+        }
+
+        public void ToggleIndicators(bool isHidden)
+        {
+            throwIndicator.SetActive(isHidden);
         }
 
         public void UpdateThrowForce(float throwForce, float minThrowForce, float maxThrowForce)

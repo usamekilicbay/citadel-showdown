@@ -10,7 +10,9 @@ namespace CitadelShowdown.Managers
     public class ConfigurationManager : MonoBehaviour
     {
         [SerializeField] private GameConfigs gameConfigs;
+        [SerializeField] private MovementConfigs movementConfigs;
 
+        public MovementConfigs MovementConfigs => movementConfigs;
         public GameConfigs GameConfigs => gameConfigs;
 
         private const string _folderPath = "Assets/Configs"; // Specify the complete folder path containing the ScriptableObjects

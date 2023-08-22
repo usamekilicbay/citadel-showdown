@@ -840,15 +840,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a05743549f280144b692ddef57654f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDragDistance: 3
-  maxThrowForce: 100
-  minThrowForce: 10
-  projectilePrefab: {fileID: 2309629511705724632, guid: 3a3440a8e8911f54485e03fd31c46a3a, type: 3}
-  maxHealth: 100
   currentHealth: 0
   currentEnergy: 0
   throwDirection: {x: 0, y: 0}
   throwForce: 0
+  projectilePrefab: {fileID: 2309629511705724632, guid: 3a3440a8e8911f54485e03fd31c46a3a, type: 3}
   spawnPos: {x: 0, y: 0}
   isDragging: 0
 --- !u!61 &271213727
@@ -1048,7 +1044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &289316490
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1559,7 +1555,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.999989, y: 3.6, z: -10}
+  m_LocalPosition: {x: 16.999994, y: 3.6, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2537,15 +2533,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac4bb65ef64cc141b26166fa7875951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDragDistance: 3
-  maxThrowForce: 30
-  minThrowForce: 1
-  projectilePrefab: {fileID: 2309629511705724632, guid: 3a3440a8e8911f54485e03fd31c46a3a, type: 3}
-  maxHealth: 100
   currentHealth: 0
   currentEnergy: 0
   throwDirection: {x: 0, y: 0}
   throwForce: 0
+  projectilePrefab: {fileID: 2309629511705724632, guid: 3a3440a8e8911f54485e03fd31c46a3a, type: 3}
   spawnPos: {x: 0, y: 0}
   isDragging: 0
 --- !u!61 &978906793
@@ -4418,6 +4410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameConfigs: {fileID: 11400000, guid: 9333912c3c3452144996c49e514f4d68, type: 2}
+  movementConfigs: {fileID: 11400000, guid: 331ec90bc823bbe41897489019a6b25e, type: 2}
 --- !u!1 &1575700713
 GameObject:
   m_ObjectHideFlags: 0
@@ -5016,7 +5009,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1663036269
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5824,6 +5817,7 @@ MonoBehaviour:
   staminaText: {fileID: 279295913}
   throwForceText: {fileID: 986266590}
   throwAngleText: {fileID: 1790528324}
+  throwIndicator: {fileID: 21680790}
 --- !u!1 &2062683073
 GameObject:
   m_ObjectHideFlags: 0
@@ -6017,6 +6011,7 @@ MonoBehaviour:
   staminaText: {fileID: 1606078658}
   throwForceText: {fileID: 705560148}
   throwAngleText: {fileID: 1138206856}
+  throwIndicator: {fileID: 777319574}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
