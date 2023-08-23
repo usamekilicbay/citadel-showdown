@@ -1,7 +1,7 @@
+using Assets.Scripts.Common.Types;
 using CitadelShowdown.Citadel;
 using CitadelShowdown.DI;
 using CitadelShowdown.Managers;
-using System.Reflection.Emit;
 using UnityEngine;
 using Zenject;
 
@@ -16,6 +16,8 @@ namespace CitadelShowdown.ProjectileNamespace
         private bool hasReachedPeak = false;
         private float lastVelocityY = 0f;
         private bool isUsed = false;
+
+        private Attack _attack;
 
         private CoreLoopFacade _coreLoopFacade;
         private CameraManager _cameraManager;
@@ -39,8 +41,9 @@ namespace CitadelShowdown.ProjectileNamespace
             Renew();
         }
 
-        public void UpdateThisBaby(Vector2 launchPos)
+        public void UpdateThisBaby(Vector2 launchPos, AttackType attackType)
         {
+            _attack = _coreLoopFacade.AttackManager.GetAttack(attackType);
             transform.position = launchPos;
             Renew();
         }
@@ -96,12 +99,12 @@ namespace CitadelShowdown.ProjectileNamespace
                 if (_coreLoopFacade.GameManager.CurrentTurn == TurnType.Player1)
                 {
                     if (collision.gameObject.TryGetComponent(out Player2Citadel victim))
-                        await victim.TakeDamageAsync(Damage);
+                        await victim.TakeDamageAsync(_attack.Damage);
                 }
                 else
                 {
                     if (collision.gameObject.TryGetComponent(out Player1Citadel victim))
-                        await victim.TakeDamageAsync(Damage);
+                        await victim.TakeDamageAsync(_attack.Damage);
                 }
             }
 

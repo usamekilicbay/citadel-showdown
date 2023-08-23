@@ -31,5 +31,15 @@ namespace CitadelShowdown.DI
         {
             UIManager.ShowScreen(targetScreen);
         }
+
+        public void ShowGameScreen()
+        {
+            UIManager.ShowScreen(GameScreen);
+        }
+        
+        public void ShowResultScreen()
+        {
+            UIManager.ShowScreen(ResultScreen);
+        }
     }
 }

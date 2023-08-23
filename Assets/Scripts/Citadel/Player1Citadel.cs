@@ -1,5 +1,6 @@
 using CitadelShowdown.UI.Citadel;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
 namespace CitadelShowdown.Citadel
@@ -26,7 +27,7 @@ namespace CitadelShowdown.Citadel
 
         private void HandlePlayerInput()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 uiCitadel.ToggleIndicators(true);
                 OnDragStart();
@@ -40,8 +41,8 @@ namespace CitadelShowdown.Citadel
             if (isDragging)
             {
                 UpdateDrag();
-                uiCitadel.UpdateThrowForce(throwForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce);
-                uiCitadel.UpdateThrowAngle(throwDirection);
+                uiCitadel.UpdateThrowForceText(throwForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce);
+                uiCitadel.UpdateThrowAngleText(throwDirection);
             }
         }
 

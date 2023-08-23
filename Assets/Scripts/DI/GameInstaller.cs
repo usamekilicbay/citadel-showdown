@@ -78,6 +78,10 @@ namespace CitadelShowdown.DI
                 .AsSingle();
 
             Container
+              .Bind<AttackManager>()
+              .AsSingle();
+
+            Container
                 .Bind<Player1Citadel>()
                 .FromComponentInHierarchy()
                 .AsSingle();

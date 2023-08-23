@@ -27,7 +27,8 @@ namespace CitadelShowdown.Managers
             // Implement your logic to determine the stamina cost based on attack type
             // For simplicity, we're using constant values here.
             return _coreLoopFacade.ConfigurationManager
-                .GameConfigs.AttackConfigs.AttackTypes.Single(x => x.attackType == attackType).energyCost;
+                .AttackConfigs.Attacks
+                .Single(x => x.AttackType == attackType).EnergyCost;
         }
     }
 }

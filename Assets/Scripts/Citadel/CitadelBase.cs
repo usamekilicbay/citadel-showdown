@@ -1,4 +1,5 @@
-﻿using CitadelShowdown.DI;
+﻿using Assets.Scripts.Common.Types;
+using CitadelShowdown.DI;
 using CitadelShowdown.Managers;
 using CitadelShowdown.ProjectileNamespace;
 using CitadelShowdown.UI.Citadel;
@@ -16,12 +17,13 @@ namespace CitadelShowdown.Citadel
         [SerializeField] protected float throwForce;
         [SerializeField] protected GameObject projectilePrefab;
         [SerializeField] protected Vector2 spawnPos;
-
-        protected UICitadelBase uiCitadel;
-
         [SerializeField] protected bool isDragging = false;
 
+        protected AttackType currentAttack;
+
         protected Projectile projectile;
+
+        protected UICitadelBase uiCitadel;
         protected CoreLoopFacade coreLoopFacade { get; private set; }
         protected TrajectoryManager trajectoryManager { get; private set; }
 
@@ -64,7 +66,7 @@ namespace CitadelShowdown.Citadel
         {
             var launchPos = transform.position;
             launchPos.y += 2f;
-            projectile.UpdateThisBaby(spawnPos);
+            projectile.UpdateThisBaby(spawnPos, currentAttack);
             projectile.Renew();
         }
 
@@ -79,6 +81,11 @@ namespace CitadelShowdown.Citadel
                 coreLoopFacade.ConfigurationManager.GameConfigs.MaxEnergy);
 
             uiCitadel.UpdateEnergyText(currentEnergy);
+        }
+
+        public void SetAttackType(AttackType attackType)
+        {
+            currentAttack = attackType;
         }
 
         protected void SpendEnergy(int amount)

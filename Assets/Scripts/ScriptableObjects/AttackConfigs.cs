@@ -2,6 +2,7 @@
 using CitadelShowdown.Citadel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CitadelShowdown.Configs
@@ -10,27 +11,37 @@ namespace CitadelShowdown.Configs
     public class AttackConfigs : ScriptableObject
     {
         [Tooltip("List of Attack objects representing attack types and their costs.")]
-        [SerializeField] private List<Attack> attackTypes = new();
-
-        // Getter property for the list of attack types and their costs.
-        public List<Attack> AttackTypes => attackTypes;
+        [field: SerializeField]
+        public List<Attack> Attacks { get; private set; } = new();
 
         private void OnValidate()
         {
             // Get all values from the AttackType enum
             AttackType[] attackTypes = (AttackType[])Enum.GetValues(typeof(AttackType));
 
-            // Ensure the list has the correct number of elements
-            while (this.attackTypes.Count < attackTypes.Length)
+            // Create a temporary list to update the attack types
+            List<Attack> tempAttacks = new List<Attack>();
+
+            // Add or update attack types in the temporary list
+            foreach (AttackType type in attackTypes)
             {
-                this.attackTypes.Add(new Attack());
+                // Check if the attack type exists in the current list
+                Attack existingAttack = Attacks.FirstOrDefault(a => a.AttackType == type);
+
+                if (existingAttack == null)
+                {
+                    // Create a new attack for the missing type
+                    tempAttacks.Add(new Attack(type: type));
+                }
+                else
+                {
+                    tempAttacks.Add(existingAttack); // Add the existing attack to the temporary list
+                }
             }
 
-            // Update attack types for each element in the list
-            for (int i = 0; i < this.attackTypes.Count; i++)
-            {
-                this.attackTypes[i].attackType = attackTypes[i];
-            }
+            // Clear the existing list and assign the temporary list to attacks
+            Attacks.Clear();
+            Attacks.AddRange(tempAttacks);
         }
     }
 }

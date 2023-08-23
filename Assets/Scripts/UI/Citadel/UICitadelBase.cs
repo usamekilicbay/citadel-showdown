@@ -1,15 +1,35 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Common.Types;
+using CitadelShowdown.Citadel;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace CitadelShowdown.UI.Citadel
 {
     public abstract class UICitadelBase : MonoBehaviour
     {
+        [Header("Buttons")]
+        [SerializeField] private Button regularAttackChooseButton;
+        [SerializeField] private Button strongAttackChooseButton;
+        [SerializeField] private Button wideAttackChooseButton;
+        [Header("Texts")]
         [SerializeField] private TextMeshProUGUI healthText;
         [SerializeField] private TextMeshProUGUI staminaText;
         [SerializeField] private TextMeshProUGUI throwForceText;
         [SerializeField] private TextMeshProUGUI throwAngleText;
         [SerializeField] private GameObject throwIndicator;
+
+        protected CitadelBase citadel;
+
+        private void Awake()
+        {
+            regularAttackChooseButton.onClick
+                .AddListener(() => citadel.SetAttackType(AttackType.RegularAttack));
+            strongAttackChooseButton.onClick
+                .AddListener(() => citadel.SetAttackType(AttackType.StrongAttack));
+            wideAttackChooseButton.onClick
+                .AddListener(() => citadel.SetAttackType(AttackType.WideAttack));
+        }
 
         public void UpdateHealthText(float health)
         {
@@ -26,13 +46,13 @@ namespace CitadelShowdown.UI.Citadel
             throwIndicator.SetActive(isHidden);
         }
 
-        public void UpdateThrowForce(float throwForce, float minThrowForce, float maxThrowForce)
+        public void UpdateThrowForceText(float throwForce, float minThrowForce, float maxThrowForce)
         {
             float throwForcePercentage = (throwForce - minThrowForce) / (maxThrowForce - minThrowForce) * 100f;
             throwForceText.SetText($"{throwForcePercentage:F0}%");
         }
 
-        public void UpdateThrowAngle(Vector2 throwDirection)
+        public void UpdateThrowAngleText(Vector2 throwDirection)
         {
             float throwAngle = Mathf.Rad2Deg * Mathf.Atan2(throwDirection.y, throwDirection.x);
             throwAngleText.SetText($"{throwAngle:F1}°");

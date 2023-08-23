@@ -94,6 +94,9 @@ namespace CitadelShowdown.Managers
 
         public void StartRun()
         {
+            _player1Citadel.Renew();
+            _player2Citadel.Renew();
+            _screenFacade.ShowGameScreen();
             //_progressManager.Renew();
             //_scoreManager.Renew();
         }
@@ -102,7 +105,8 @@ namespace CitadelShowdown.Managers
         {
             await Task.Delay(2000);
 
-            _screenFacade.ShowScreen(_screenFacade.ResultScreen);
+            _screenFacade.ShowResultScreen();
+
 
             //if (isSuccessful)
             //    await _progressManager.Complete(isSuccessful);

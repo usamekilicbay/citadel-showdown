@@ -1,5 +1,4 @@
 using CitadelShowdown.Configs;
-using System;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -9,11 +8,9 @@ namespace CitadelShowdown.Managers
 {
     public class ConfigurationManager : MonoBehaviour
     {
-        [SerializeField] private GameConfigs gameConfigs;
-        [SerializeField] private MovementConfigs movementConfigs;
-
-        public MovementConfigs MovementConfigs => movementConfigs;
-        public GameConfigs GameConfigs => gameConfigs;
+        [field: SerializeField] public GameConfigs GameConfigs { get; private set; }
+        [field: SerializeField] public AttackConfigs AttackConfigs { get; private set; }
+        [field: SerializeField] public MovementConfigs MovementConfigs { get; private set; }
 
         private const string _folderPath = "Assets/Configs"; // Specify the complete folder path containing the ScriptableObjects
 

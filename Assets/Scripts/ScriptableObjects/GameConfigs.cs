@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace CitadelShowdown.Configs
 {
-    using UnityEngine;
 
     [CreateAssetMenu(fileName = "GameConfigs", menuName = "Configs/Game Configs")]
     public class GameConfigs : ScriptableObject
@@ -16,9 +15,6 @@ namespace CitadelShowdown.Configs
         [Tooltip("The rate at which stamina renews (per second).")]
         [SerializeField] private float staminaRenewRate;
 
-        [Tooltip("Attack configurations for different attack types.")]
-        [SerializeField] private AttackConfigs attackConfigs;
-
         // Getter property for max health.
         public float MaxHealth => maxHealth;
 
@@ -27,8 +23,5 @@ namespace CitadelShowdown.Configs
 
         // Getter property for stamina renew rate.
         public float EnergyRenewRate => staminaRenewRate;
-
-        // Getter property for attack configurations.
-        public AttackConfigs AttackConfigs => attackConfigs;
     }
 }

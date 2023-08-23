@@ -4,6 +4,6 @@
     {
         RegularAttack,
         StrongAttack,
-        WideAttack
+        WideAttack,
     }
 }
