@@ -1,7 +1,8 @@
+using Assets.Scripts.Common.Types;
 using CitadelShowdown.Citadel;
 using CitadelShowdown.DI;
-using CitadelShowdown.UI.Screen;
 using MoreMountains.Feedbacks;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
@@ -22,8 +23,6 @@ namespace CitadelShowdown.Managers
         [SerializeField] private float maxPlayAreaWidth = 100f;
         public float MaxPlayAreaWidth => maxPlayAreaWidth;
 
-        public TurnType CurrentTurn { get; private set; }
-
         private UIManagerBase _uiManager;
         private CameraManager _cameraManager;
         //private ICurrencyManager _currencyManager;
@@ -33,6 +32,7 @@ namespace CitadelShowdown.Managers
         private UIScreenFacade _screenFacade;
         private Player1Citadel _player1Citadel;
         private Player2Citadel _player2Citadel;
+        private BattleManager _battleManager;
 
         [Inject]
         public void Construct(UIManagerBase uiManager,
@@ -43,7 +43,8 @@ namespace CitadelShowdown.Managers
             //ProgressManager progressManager,
             UIScreenFacade screenFacade,
             Player1Citadel player1Citadel,
-            Player2Citadel player2Citadel)
+            Player2Citadel player2Citadel,
+            BattleManager battleManager)
         {
             _uiManager = uiManager;
             _cameraManager = cameraManager;
@@ -54,11 +55,12 @@ namespace CitadelShowdown.Managers
             _screenFacade = screenFacade;
             _player1Citadel = player1Citadel;
             _player2Citadel = player2Citadel;
+            _battleManager = battleManager;
         }
 
         private void Start()
         {
-            _cameraManager.SwitchCitadelCamera(CurrentTurn);
+            StartRun();
         }
 
         //TODO: Development purpose
@@ -73,39 +75,31 @@ namespace CitadelShowdown.Managers
                 _screenFacade.ShowScreen(_screenFacade.GameScreen);
         }
 
-        public void SwitchTurn()
-        {
-            CurrentTurn = CurrentTurn == TurnType.Player1
-                ? TurnType.Player2
-                : TurnType.Player1;
-
-            _cameraManager.SwitchCitadelCamera(CurrentTurn);
-
-            if (CurrentTurn == TurnType.Player2)
-                _player2Citadel.SimulateAITurn();
-        }
-
         public void Renew()
         {
             _player1Citadel.Renew();
             _player2Citadel.Renew();
         }
 
-
         public void StartRun()
         {
             _player1Citadel.Renew();
             _player2Citadel.Renew();
             _screenFacade.ShowGameScreen();
+            _battleManager.StartBattle();
             //_progressManager.Renew();
             //_scoreManager.Renew();
         }
 
-        public async Task CompleteRun(bool isSuccessful = true)
+        public async Task CompleteRun(bool isSuccessful = true, CancellationToken cancellationToken = default)
         {
             await Task.Delay(2000);
 
+            _battleManager.EndBattle();
+
             _screenFacade.ShowResultScreen();
+
+
 
 
             //if (isSuccessful)

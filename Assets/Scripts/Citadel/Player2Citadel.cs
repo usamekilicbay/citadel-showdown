@@ -1,5 +1,6 @@
-using CitadelShowdown.DI;
+using Assets.Scripts.Common.Types;
 using CitadelShowdown.UI.Citadel;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
@@ -18,16 +19,33 @@ namespace CitadelShowdown.Citadel
             uiCitadel = uiPlayer2Citadel;
         }
 
-        public async void SimulateAITurn()
+        public override async Task UpdateTurn()
         {
-            await Task.Delay(3000);
+            await base.UpdateTurn();
+
+            collider.enabled = coreLoopFacade.BattleState == BattleState.Player1;
+
+            await SimulateAITurn();
+        }
+
+        public async override Task SetAttackType(AttackType attackType, CancellationToken cancellationToken = default)
+        {
+            await base.SetAttackType(attackType);
+
+            actionType = ActionType.Attack;
+        }
+
+        public async Task SimulateAITurn(CancellationToken cancellationToken = default)
+        {
+            SpawnProjectile();
+            
+            await Task.Delay(1000);
 
             // Calculate AI's throw direction, force, and attack type
             throwDirection = CalculateThrowDirection();
             throwForce = CalculateThrowForce();
 
             // Spawn and throw a projectile
-            SpawnProjectile();
             ThrowProjectile();
         }
 

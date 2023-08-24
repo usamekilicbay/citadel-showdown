@@ -75,6 +75,10 @@ namespace CitadelShowdown.DI
 
             Container
                 .Bind<UIScreenFacade>()
+                .AsSingle(); 
+            
+            Container
+                .Bind<BattleManager>()
                 .AsSingle();
 
             Container
@@ -92,7 +96,7 @@ namespace CitadelShowdown.DI
                 .AsSingle();
 
             Container
-                .Bind<UIPlayer1Citadell>()
+                .Bind<UIPlayer1Citadel>()
                 .FromComponentInHierarchy()
                 .AsSingle();
 

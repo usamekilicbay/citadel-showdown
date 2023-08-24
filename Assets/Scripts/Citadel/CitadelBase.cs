@@ -3,6 +3,7 @@ using CitadelShowdown.DI;
 using CitadelShowdown.Managers;
 using CitadelShowdown.ProjectileNamespace;
 using CitadelShowdown.UI.Citadel;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
@@ -16,8 +17,11 @@ namespace CitadelShowdown.Citadel
         [SerializeField] protected Vector2 throwDirection;
         [SerializeField] protected float throwForce;
         [SerializeField] protected GameObject projectilePrefab;
-        [SerializeField] protected Vector2 spawnPos;
         [SerializeField] protected bool isDragging = false;
+
+        [SerializeField] protected Collider2D collider;
+
+        protected ActionType actionType;
 
         protected AttackType currentAttack;
 
@@ -37,6 +41,21 @@ namespace CitadelShowdown.Citadel
             this.trajectoryManager = trajectoryManager;
         }
 
+        private void Awake()
+        {
+            collider = GetComponent<Collider2D>();
+        }
+
+        private void OnEnable()
+        {
+            coreLoopFacade.BattleManager.OnTurnChange += UpdateTurn;
+        }
+
+        private void OnDisable()
+        {
+            coreLoopFacade.BattleManager.OnTurnChange -= UpdateTurn;
+        }
+
         protected virtual void Start()
         {
             Setup();
@@ -44,13 +63,7 @@ namespace CitadelShowdown.Citadel
 
         public void Setup()
         {
-            spawnPos = transform.position;
-            spawnPos.y += 2;
-            currentHealth = coreLoopFacade.ConfigurationManager.GameConfigs.MaxHealth;
-            currentEnergy = coreLoopFacade.ConfigurationManager.GameConfigs.MaxEnergy;
-            uiCitadel.UpdateHealthText(currentHealth);
-            uiCitadel.UpdateEnergyText(currentEnergy);
-            uiCitadel.ToggleIndicators(false);
+            Renew();
         }
 
         public void Renew()
@@ -62,17 +75,11 @@ namespace CitadelShowdown.Citadel
             uiCitadel.ToggleIndicators(false);
         }
 
-        protected void SpawnProjectile()
+        public async virtual Task UpdateTurn()
         {
-            var launchPos = transform.position;
-            launchPos.y += 2f;
-            projectile.UpdateThisBaby(spawnPos, currentAttack);
-            projectile.Renew();
-        }
+            await Task.FromResult(actionType = ActionType.Select);
 
-        protected virtual void ThrowProjectile()
-        {
-            projectile?.Throw(throwDirection, throwForce, coreLoopFacade.CurrentTurn);
+            RenewEnergy();
         }
 
         public void RenewEnergy()
@@ -83,9 +90,11 @@ namespace CitadelShowdown.Citadel
             uiCitadel.UpdateEnergyText(currentEnergy);
         }
 
-        public void SetAttackType(AttackType attackType)
+        public async virtual Task SetAttackType(AttackType attackType, CancellationToken cancellationToken = default)
         {
             currentAttack = attackType;
+            SpawnProjectile();
+            actionType = ActionType.Attack;
         }
 
         protected void SpendEnergy(int amount)
@@ -95,7 +104,17 @@ namespace CitadelShowdown.Citadel
             uiCitadel.UpdateEnergyText(currentEnergy);
         }
 
-        public async Task TakeDamageAsync(int damageAmount)
+        protected void SpawnProjectile()
+        {
+            var launchPos = transform.position;
+            launchPos.y += 2f;
+            projectile.UpdateThisBaby(launchPos, currentAttack);
+        }
+
+        protected virtual void ThrowProjectile()
+            => projectile?.Throw(throwDirection, throwForce);
+
+        public async Task TakeDamageAsync(int damageAmount, CancellationToken cancellationToken = default)
         {
             currentHealth -= damageAmount;
 

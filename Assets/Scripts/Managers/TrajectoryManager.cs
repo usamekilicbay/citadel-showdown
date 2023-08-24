@@ -38,7 +38,7 @@ namespace CitadelShowdown.Managers
 
             var lastPos = attackerTransform.position;
 
-            Debug.Log(numPointsToShow);
+            //Debug.Log(numPointsToShow);
 
             for (int i = 0; i < numTrajectoryPoints; i++)
             {

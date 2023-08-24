@@ -1,33 +1,47 @@
+using Assets.Scripts.Common.Types;
 using CitadelShowdown.UI.Citadel;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Zenject;
 
 namespace CitadelShowdown.Citadel
 {
     public class Player1Citadel : CitadelBase
     {
-        private Vector3 dragStartScreenPosition;
+        private Vector3 _dragStartScreenPosition;
 
         [Inject]
-        public void Construct(UIPlayer1Citadell uiPlayer1Citadel)
+        public void Construct(UIPlayer1Citadel uiPlayer1Citadel)
         {
             uiCitadel = uiPlayer1Citadel;
         }
 
         private void Update()
         {
-            if (coreLoopFacade.CurrentTurn != TurnType.Player1)
-            {
+            if (actionType != ActionType.Attack)
                 return;
-            }
 
             HandlePlayerInput();
         }
 
+        public async override Task UpdateTurn()
+        {
+            collider.enabled = coreLoopFacade.BattleState == BattleState.Player2;
+
+            await base.UpdateTurn();
+        }
+
+        public async override Task SetAttackType(AttackType attackType, CancellationToken cancellationToken = default)
+        {
+            await Task.Delay(500);
+
+            await base.SetAttackType(attackType);
+        }
+
         private void HandlePlayerInput()
         {
-            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (Input.GetMouseButtonDown(0))
             {
                 uiCitadel.ToggleIndicators(true);
                 OnDragStart();
@@ -49,9 +63,9 @@ namespace CitadelShowdown.Citadel
         private void OnDragStart()
         {
             isDragging = true;
-            dragStartScreenPosition = Input.mousePosition;
-            dragStartScreenPosition.z = 10; // Depth of the Camera
-            dragStartScreenPosition = Camera.main.ScreenToWorldPoint(dragStartScreenPosition);
+            _dragStartScreenPosition = Input.mousePosition;
+            _dragStartScreenPosition.z = 10; // Depth of the Camera
+            _dragStartScreenPosition = Camera.main.ScreenToWorldPoint(_dragStartScreenPosition);
             SpawnProjectile();
         }
 
@@ -62,16 +76,16 @@ namespace CitadelShowdown.Citadel
             currentPosition = Camera.main.ScreenToWorldPoint(currentPosition);
 
             // Check if the drag distance exceeds the threshold
-            Vector3 dragVector = dragStartScreenPosition - currentPosition;
+            Vector3 dragVector = _dragStartScreenPosition - currentPosition;
             float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
 
             throwDirection = dragVector.normalized;
             throwForce = Mathf.Lerp(coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce, dragDistance / coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
 
             var perc = (throwForce - coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce) / (coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce - coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce) * 100f;
-            Debug.Log($"%{perc}");
+            //Debug.Log($"%{perc}");
 
-            trajectoryManager.UpdateTrajectoryLine(dragStartScreenPosition, currentPosition);
+            trajectoryManager.UpdateTrajectoryLine(_dragStartScreenPosition, currentPosition);
             trajectoryManager.UpdateTrajectory(throwDirection, perc, transform);
         }
 

@@ -48,9 +48,9 @@ namespace CitadelShowdown.UI.Screen
         {
         }
 
-        private void UpdateWinnerText(TurnType turnType)
+        private void UpdateWinnerText(string winner)
         {
-            winnerText.SetText($"{turnType}");
+            winnerText.SetText($"{winner}");
         }
 
         #region Later

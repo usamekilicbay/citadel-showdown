@@ -1,3 +1,4 @@
+using Assets.Scripts.Common.Types;
 using Cinemachine;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace CitadelShowdown.Managers
         [SerializeField] CinemachineVirtualCamera player2CitadelCamera;
 
         private void Awake()
-        { 
+        {
             projectileCamera = GameObject.Find("Projectile Camera").GetComponent<CinemachineVirtualCamera>();
             player1CitadelCamera = GameObject.Find("Player 1 Citadel Camera").GetComponent<CinemachineVirtualCamera>();
             player2CitadelCamera = GameObject.Find("Player 2 Citadel Camera").GetComponent<CinemachineVirtualCamera>();
@@ -32,11 +33,11 @@ namespace CitadelShowdown.Managers
             projectileCamera.gameObject.SetActive(true);
         }
 
-        public void SwitchCitadelCamera(TurnType turn)
+        public void SwitchCitadelCamera(BattleState battleState)
         {
             projectileCamera.gameObject.SetActive(false);
-            player1CitadelCamera.gameObject.SetActive(turn == TurnType.Player1);
-            player2CitadelCamera.gameObject.SetActive(turn == TurnType.Player2);
+            player1CitadelCamera.gameObject.SetActive(battleState == BattleState.Player1);
+            player2CitadelCamera.gameObject.SetActive(battleState == BattleState.Player2);
         }
     }
 }

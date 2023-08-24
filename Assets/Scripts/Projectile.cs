@@ -9,13 +9,14 @@ namespace CitadelShowdown.ProjectileNamespace
 {
     public class Projectile : MonoBehaviour
     {
-        public int Damage;
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private LayerMask layerMask;
 
         private bool hasReachedPeak = false;
         private float lastVelocityY = 0f;
-        private bool isUsed = false;
+
+        [SerializeField] private ProjectileState state;
 
         private Attack _attack;
 
@@ -50,63 +51,63 @@ namespace CitadelShowdown.ProjectileNamespace
 
         public void Renew()
         {
+            var layer = _coreLoopFacade.BattleState == BattleState.Player1
+                ? 7 // Set the layer number for Player1
+                : 6; // Set the layer number for Player2
+
+            // Create a LayerMask using the layer number
+            layerMask = (1 << layer) | (1 << 8); // Add layer 8 to the LayerMask
+
             spriteRenderer.enabled = true;
+
+            // Your other code here...
 
             gameObject.TryGetComponent(out Rigidbody2D rb);
 
-            this.rb = rb == null 
-                ? gameObject.AddComponent<Rigidbody2D>() 
+            this.rb = rb == null
+                ? gameObject.AddComponent<Rigidbody2D>()
                 : rb;
 
             this.rb.gravityScale = 0;
-            isUsed = false;
+            state = ProjectileState.Respawned;
         }
 
-        public void Throw(Vector2 throwDirection, float throwForce, TurnType attacker)
+        public void Throw(Vector2 throwDirection, float throwForce)
         {
-            Damage = 10;
-
+            state = ProjectileState.Thrown;
             rb.gravityScale = 1;
             rb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
 
             _cameraManager.SwitchToProjectileCamera(transform);
-            //Time.timeScale = 0.3f;
         }
 
         private void Update()
         {
-            if (isUsed)
+            if (state != ProjectileState.Thrown)
                 return;
-
-            //// Check if the velocity has changed from positive to negative
-            //if (!hasReachedPeak && rb.velocity.y < 0 && lastVelocityY > 0)
-            //{
-            //    // Projectile has likely reached its peak height, update mass
-            //    hasReachedPeak = true;
-            //    rb.gravityScale = 2f;
-            //}
-
-            //lastVelocityY = rb.velocity.y;
 
             if (transform.position.y <= -10f)
                 Vanish();
         }
 
-        private async void OnCollisionEnter2D(Collision2D collision)
+        private void FixedUpdate()
         {
-            if (collision.gameObject.name == "Player 1 Citadel" || collision.gameObject.name == "Player 2 Citadel")
-            {
-                if (_coreLoopFacade.GameManager.CurrentTurn == TurnType.Player1)
-                {
-                    if (collision.gameObject.TryGetComponent(out Player2Citadel victim))
-                        await victim.TakeDamageAsync(_attack.Damage);
-                }
-                else
-                {
-                    if (collision.gameObject.TryGetComponent(out Player1Citadel victim))
-                        await victim.TakeDamageAsync(_attack.Damage);
-                }
-            }
+            if (state != ProjectileState.Thrown)
+                return;
+
+            var position = transform.position;
+            var radius = 0.5f; // Adjust the radius as needed
+
+            var hit = Physics2D.CircleCast(position, radius, Vector2.zero, 0f, layerMask);
+
+            if (hit.collider != null)
+                HandleCollision(hit.collider);
+        }
+
+        private async void HandleCollision(Collider2D collider)
+        {
+            if (collider.gameObject.TryGetComponent(out CitadelBase targetCitadel))
+                await targetCitadel.TakeDamageAsync(_attack.Damage);
 
             Vanish();
         }
@@ -115,18 +116,16 @@ namespace CitadelShowdown.ProjectileNamespace
         {
             Time.timeScale = 1f;
 
-            if (isUsed)
+            if (state == ProjectileState.Vanished)
                 return;
 
-            isUsed = true;
+            state = ProjectileState.Vanished;
 
             spriteRenderer.enabled = false;
             Destroy(rb);
 
             await _coreLoopFacade.GameManager.MMFPlayerProjectile.PlayFeedbacksTask(transform.position);
 
-            //await Task.Delay(1000);
-            // Switch turn after a successful throw
             _coreLoopFacade.SwitchTurn();
         }
     }

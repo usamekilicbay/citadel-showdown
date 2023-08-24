@@ -873,7 +873,7 @@ GameObject:
   - component: {fileID: 271213723}
   - component: {fileID: 271213725}
   - component: {fileID: 271213727}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player 2 Citadel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -965,8 +965,8 @@ MonoBehaviour:
   throwDirection: {x: 0, y: 0}
   throwForce: 0
   projectilePrefab: {fileID: 2309629511705724632, guid: 3a3440a8e8911f54485e03fd31c46a3a, type: 3}
-  spawnPos: {x: 0, y: 0}
   isDragging: 0
+  collider: {fileID: 0}
 --- !u!61 &271213727
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2696,7 +2696,7 @@ GameObject:
   - component: {fileID: 978906790}
   - component: {fileID: 978906791}
   - component: {fileID: 978906793}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player 1 Citadel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2788,8 +2788,8 @@ MonoBehaviour:
   throwDirection: {x: 0, y: 0}
   throwForce: 0
   projectilePrefab: {fileID: 2309629511705724632, guid: 3a3440a8e8911f54485e03fd31c46a3a, type: 3}
-  spawnPos: {x: 0, y: 0}
   isDragging: 0
+  collider: {fileID: 0}
 --- !u!61 &978906793
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2822,7 +2822,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.23139033, y: 0.24769643}
   m_SpriteTilingProperty:
     border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
     pivot: {x: 0.5, y: 0.5}
@@ -2833,7 +2833,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.16, y: 0.16}
+  m_Size: {x: 0.6227806, y: 0.6553928}
   m_EdgeRadius: 0
 --- !u!1 &986266587
 GameObject:
@@ -4899,9 +4899,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85357a800f186f74897812206ef8486d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GameConfigs>k__BackingField: {fileID: 0}
-  <AttackConfigs>k__BackingField: {fileID: 0}
-  <MovementConfigs>k__BackingField: {fileID: 0}
+  <GameConfigs>k__BackingField: {fileID: 11400000, guid: 9333912c3c3452144996c49e514f4d68, type: 2}
+  <AttackConfigs>k__BackingField: {fileID: 11400000, guid: 468ed92b56e25f64f85f5bd057568a4a, type: 2}
+  <MovementConfigs>k__BackingField: {fileID: 11400000, guid: 331ec90bc823bbe41897489019a6b25e, type: 2}
 --- !u!1 &1575700713
 GameObject:
   m_ObjectHideFlags: 0
@@ -6444,7 +6444,7 @@ GameObject:
   - component: {fileID: 2062683075}
   - component: {fileID: 2062683074}
   - component: {fileID: 2062683076}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
