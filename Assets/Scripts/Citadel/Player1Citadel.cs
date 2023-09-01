@@ -27,7 +27,10 @@ namespace CitadelShowdown.Citadel
 
         public async override Task UpdateTurn()
         {
-            collider.enabled = coreLoopFacade.BattleState == BattleState.Player2;
+            if (coreLoopFacade.BattleState != BattleState.Player1)
+                return;
+
+            //collider.enabled = coreLoopFacade.BattleState == BattleState.Player2;
 
             await base.UpdateTurn();
         }

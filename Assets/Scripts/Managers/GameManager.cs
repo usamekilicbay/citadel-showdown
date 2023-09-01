@@ -89,7 +89,7 @@ namespace CitadelShowdown.Managers
             _battleManager.StartBattle();
             //_progressManager.Renew();
             //_scoreManager.Renew();
-        }
+        } 
 
         public async Task CompleteRun(bool isSuccessful = true, CancellationToken cancellationToken = default)
         {
@@ -98,9 +98,6 @@ namespace CitadelShowdown.Managers
             _battleManager.EndBattle();
 
             _screenFacade.ShowResultScreen();
-
-
-
 
             //if (isSuccessful)
             //    await _progressManager.Complete(isSuccessful);

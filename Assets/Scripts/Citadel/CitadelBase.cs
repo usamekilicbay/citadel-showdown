@@ -18,7 +18,7 @@ namespace CitadelShowdown.Citadel
         [SerializeField] protected float throwForce;
         [SerializeField] protected GameObject projectilePrefab;
         [SerializeField] protected bool isDragging = false;
-
+        [SerializeField] protected Transform trebuchetThrowTransform;
         [SerializeField] protected Collider2D collider;
 
         protected ActionType actionType;
@@ -30,6 +30,7 @@ namespace CitadelShowdown.Citadel
         protected UICitadelBase uiCitadel;
         protected CoreLoopFacade coreLoopFacade { get; private set; }
         protected TrajectoryManager trajectoryManager { get; private set; }
+        
 
         [Inject]
         public void Construct(CoreLoopFacade coreLoopFacade,
@@ -44,6 +45,9 @@ namespace CitadelShowdown.Citadel
         private void Awake()
         {
             collider = GetComponent<Collider2D>();
+
+            //TODO: Update after implementing trebuchet assets
+            trebuchetThrowTransform = transform;
         }
 
         private void OnEnable()

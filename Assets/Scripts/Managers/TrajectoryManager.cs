@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using CitadelShowdown.DI;
+using UnityEngine;
+using Zenject;
 
 namespace CitadelShowdown.Managers
 {
@@ -10,7 +12,13 @@ namespace CitadelShowdown.Managers
         [SerializeField] private GameObject[] trajectoryPoints;
         [SerializeField] private LineRenderer trajectoryLineRenderer;
 
-        [SerializeField] private float maxDragDistance = 3f;
+        private CoreLoopFacade _coreLoopFacade;
+
+        [Inject]
+        public void Construct(CoreLoopFacade coreLoopFacade)
+        {
+            _coreLoopFacade = coreLoopFacade;
+        }
 
         private void Start()
         {
@@ -36,16 +44,19 @@ namespace CitadelShowdown.Managers
             // Calculate the number of points to show based on maxDragDistance
             int numPointsToShow = Mathf.RoundToInt(throwForce / numTrajectoryPoints);
 
-            var lastPos = attackerTransform.position;
-
-            //Debug.Log(numPointsToShow);
+            var lastPos = attackerTransform.position + throwDirection * 2f;
 
             for (int i = 0; i < numTrajectoryPoints; i++)
             {
-                //float percentage = (i + 1) / (float)numPointsToShow; // Calculate percentage
-                Vector3 pointPosition = lastPos + throwDirection;
-                trajectoryPoints[i].transform.position = pointPosition;
-                trajectoryPoints[i].SetActive(true);
+                Vector3 pointPosition = lastPos + throwDirection * 0.5f;
+                var trajectoryPoint = trajectoryPoints[i];
+                trajectoryPoint.transform.position = pointPosition;
+
+                // Calculate the rotation to face the throw direction
+                Quaternion rotation = Quaternion.LookRotation(Vector3.forward, throwDirection);
+                trajectoryPoint.transform.rotation = rotation;
+
+                trajectoryPoint.SetActive(true);
                 lastPos = pointPosition;
             }
 
@@ -57,7 +68,7 @@ namespace CitadelShowdown.Managers
         public void UpdateTrajectoryLine(Vector3 start, Vector3 current)
         {
             Vector3 dragVector = start - current;
-            float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, maxDragDistance);
+            float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, _coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
             Vector3 clampedEnd = start - dragVector.normalized * dragDistance;
 
             trajectoryLineRenderer.enabled = true;
