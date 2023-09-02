@@ -1,4 +1,5 @@
 using CitadelShowdown.Citadel;
+using CitadelShowdown.Events;
 using CitadelShowdown.Managers;
 using CitadelShowdown.ProjectileNamespace;
 using CitadelShowdown.UI.Citadel;
@@ -84,6 +85,10 @@ namespace CitadelShowdown.DI
             Container
               .Bind<AttackManager>()
               .AsSingle();
+
+            Container
+                .Bind<EventBus>()
+                .AsSingle();
 
             Container
                 .Bind<Player1Citadel>()

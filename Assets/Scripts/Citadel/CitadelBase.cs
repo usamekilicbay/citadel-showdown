@@ -30,7 +30,7 @@ namespace CitadelShowdown.Citadel
         protected UICitadelBase uiCitadel;
         protected CoreLoopFacade coreLoopFacade { get; private set; }
         protected TrajectoryManager trajectoryManager { get; private set; }
-        
+
 
         [Inject]
         public void Construct(CoreLoopFacade coreLoopFacade,
@@ -79,7 +79,7 @@ namespace CitadelShowdown.Citadel
             uiCitadel.ToggleIndicators(false);
         }
 
-        public async virtual Task UpdateTurn()
+        public async virtual Task UpdateTurn(CancellationToken cancellationToken = default)
         {
             await Task.FromResult(actionType = ActionType.Select);
 
@@ -110,25 +110,30 @@ namespace CitadelShowdown.Citadel
 
         protected void SpawnProjectile()
         {
+            Debug.Log("spanw");
+
             var launchPos = transform.position;
             launchPos.y += 2f;
             projectile.UpdateThisBaby(launchPos, currentAttack);
         }
 
         protected virtual void ThrowProjectile()
-            => projectile?.Throw(throwDirection, throwForce);
+            => projectile.Throw(throwDirection, throwForce);
 
-        public async Task TakeDamageAsync(int damageAmount, CancellationToken cancellationToken = default)
+        public async Task<bool> TakeDamageAsync(int damageAmount, CancellationToken cancellationToken = default)
         {
             currentHealth -= damageAmount;
 
-            if (currentHealth <= 0)
-            {
-                currentHealth = 0;
-                await coreLoopFacade.GameManager.CompleteRun();
-            }
-
             uiCitadel.UpdateHealthText(currentHealth);
+
+            await Task.Delay(1000);
+
+            if (currentHealth > 0)
+                return false;
+
+            currentHealth = 0;
+            await coreLoopFacade.GameManager.CompleteRun();
+            return true;
         }
     }
 }

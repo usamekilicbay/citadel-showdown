@@ -29,9 +29,14 @@ namespace CitadelShowdown.DI
         public void SwitchTurn()
         {
             var state = BattleState == BattleState.Player1
-                ? BattleState.Player2
-                : BattleState.Player1;
+                     ? BattleState.Player2
+                     : BattleState.Player1;
 
+            BattleManager.SwitchBattleState(state);
+        }
+
+        public void SwitchTurn(BattleState state = default)
+        {
             BattleManager.SwitchBattleState(state);
         }
     }

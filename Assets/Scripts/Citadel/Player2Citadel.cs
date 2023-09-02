@@ -19,7 +19,7 @@ namespace CitadelShowdown.Citadel
             uiCitadel = uiPlayer2Citadel;
         }
 
-        public override async Task UpdateTurn()
+        public override async Task UpdateTurn(CancellationToken cancellationToken = default)
         {
             if (coreLoopFacade.BattleState != BattleState.Player2)
                 return;
@@ -28,20 +28,18 @@ namespace CitadelShowdown.Citadel
 
             //collider.enabled = coreLoopFacade.BattleState == BattleState.Player1;
 
+            await SetAttackType(AttackType.RegularAttack, cancellationToken);
+
             await SimulateAITurn();
         }
 
         public async override Task SetAttackType(AttackType attackType, CancellationToken cancellationToken = default)
         {
             await base.SetAttackType(attackType);
-
-            actionType = ActionType.Attack;
         }
 
         public async Task SimulateAITurn(CancellationToken cancellationToken = default)
         {
-            SpawnProjectile();
-            
             await Task.Delay(1000);
 
             // Calculate AI's throw direction, force, and attack type

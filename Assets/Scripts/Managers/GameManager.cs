@@ -1,4 +1,3 @@
-using Assets.Scripts.Common.Types;
 using CitadelShowdown.Citadel;
 using CitadelShowdown.DI;
 using MoreMountains.Feedbacks;
@@ -33,6 +32,7 @@ namespace CitadelShowdown.Managers
         private Player1Citadel _player1Citadel;
         private Player2Citadel _player2Citadel;
         private BattleManager _battleManager;
+        private TrajectoryManager _trajectoryManager;
 
         [Inject]
         public void Construct(UIManagerBase uiManager,
@@ -44,7 +44,8 @@ namespace CitadelShowdown.Managers
             UIScreenFacade screenFacade,
             Player1Citadel player1Citadel,
             Player2Citadel player2Citadel,
-            BattleManager battleManager)
+            BattleManager battleManager,
+            TrajectoryManager trajectoryManager)
         {
             _uiManager = uiManager;
             _cameraManager = cameraManager;
@@ -56,6 +57,7 @@ namespace CitadelShowdown.Managers
             _player1Citadel = player1Citadel;
             _player2Citadel = player2Citadel;
             _battleManager = battleManager;
+            _trajectoryManager = trajectoryManager;
         }
 
         private void Start()
@@ -75,16 +77,11 @@ namespace CitadelShowdown.Managers
                 _screenFacade.ShowScreen(_screenFacade.GameScreen);
         }
 
-        public void Renew()
-        {
-            _player1Citadel.Renew();
-            _player2Citadel.Renew();
-        }
-
         public void StartRun()
         {
             _player1Citadel.Renew();
             _player2Citadel.Renew();
+            _trajectoryManager.Renew();
             _screenFacade.ShowGameScreen();
             _battleManager.StartBattle();
             //_progressManager.Renew();

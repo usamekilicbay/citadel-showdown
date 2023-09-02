@@ -1,5 +1,6 @@
 using Assets.Scripts.Common.Types;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
@@ -8,7 +9,7 @@ namespace CitadelShowdown.Managers
 {
     public class BattleManager
     {
-        public Func<Task> OnTurnChange;
+        public Func<CancellationToken, Task> OnTurnChange;
 
         public BattleState CurrentState { get; private set; }
 
@@ -34,11 +35,12 @@ namespace CitadelShowdown.Managers
 
         public void SwitchBattleState(BattleState newState)
         {
-            OnTurnChange();
-
-            // Add logic here for any state-specific behavior
             CurrentState = newState;
             Debug.Log("Battle State: " + CurrentState);
+            OnTurnChange(default);
+
+            if (CurrentState == BattleState.NotFighting)
+                return;
 
             _cameraManager.SwitchCitadelCamera(CurrentState);
         }

@@ -12,6 +12,7 @@ namespace CitadelShowdown.ProjectileNamespace
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private LayerMask layerMask;
+        [SerializeField] private float radius = 0.5f;
 
         private bool hasReachedPeak = false;
         private float lastVelocityY = 0f;
@@ -39,6 +40,7 @@ namespace CitadelShowdown.ProjectileNamespace
         public void Setup()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+            rb = GetComponent<Rigidbody2D>();
             Renew();
         }
 
@@ -47,6 +49,7 @@ namespace CitadelShowdown.ProjectileNamespace
             _attack = _coreLoopFacade.AttackManager.GetAttack(attackType);
             transform.position = launchPos;
             Renew();
+            spriteRenderer.enabled = true;
         }
 
         public void Renew()
@@ -58,17 +61,8 @@ namespace CitadelShowdown.ProjectileNamespace
             // Create a LayerMask using the layer number
             layerMask = (1 << layer) | (1 << 8); // Add layer 8 to the LayerMask
 
-            spriteRenderer.enabled = true;
-
-            // Your other code here...
-
-            gameObject.TryGetComponent(out Rigidbody2D rb);
-
-            this.rb = rb == null
-                ? gameObject.AddComponent<Rigidbody2D>()
-                : rb;
-
-            this.rb.gravityScale = 0;
+            spriteRenderer.enabled = false;
+            rb.gravityScale = 0;
             state = ProjectileState.Respawned;
         }
 
@@ -78,7 +72,7 @@ namespace CitadelShowdown.ProjectileNamespace
             rb.gravityScale = 1;
             rb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
 
-            _cameraManager.SwitchToProjectileCamera(transform);
+            _cameraManager.SwitchToProjectileCamera();
         }
 
         private void Update()
@@ -96,7 +90,6 @@ namespace CitadelShowdown.ProjectileNamespace
                 return;
 
             var position = transform.position;
-            var radius = 0.5f; // Adjust the radius as needed
 
             var hit = Physics2D.CircleCast(position, radius, Vector2.zero, 0f, layerMask);
 
@@ -106,27 +99,39 @@ namespace CitadelShowdown.ProjectileNamespace
 
         private async void HandleCollision(Collider2D collider)
         {
-            if (collider.gameObject.TryGetComponent(out CitadelBase targetCitadel))
-                await targetCitadel.TakeDamageAsync(_attack.Damage);
+            if (state == ProjectileState.Vanished)
+                return;
 
             Vanish();
+
+            Debug.Log(collider.name);
+
+            var isGameOver = false;
+
+            if (collider.gameObject.TryGetComponent(out CitadelBase targetCitadel))
+                isGameOver = await targetCitadel.TakeDamageAsync(_attack.Damage);
+
+            if (!isGameOver)
+                _coreLoopFacade.SwitchTurn();
         }
 
         private async void Vanish()
         {
             Time.timeScale = 1f;
 
-            if (state == ProjectileState.Vanished)
-                return;
-
             state = ProjectileState.Vanished;
-
+            rb.gravityScale = 0;
+            rb.velocity = Vector2.zero;
             spriteRenderer.enabled = false;
-            Destroy(rb);
-
             await _coreLoopFacade.GameManager.MMFPlayerProjectile.PlayFeedbacksTask(transform.position);
+        }
 
-            _coreLoopFacade.SwitchTurn();
+        private void OnDrawGizmos()
+        {
+            var origin = transform.position;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(origin, radius);
         }
     }
 }

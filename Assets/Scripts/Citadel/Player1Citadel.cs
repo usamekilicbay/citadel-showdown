@@ -19,13 +19,14 @@ namespace CitadelShowdown.Citadel
 
         private void Update()
         {
-            if (actionType != ActionType.Attack)
+            if (actionType != ActionType.Attack 
+                || coreLoopFacade.BattleState == BattleState.NotFighting)
                 return;
 
             HandlePlayerInput();
         }
 
-        public async override Task UpdateTurn()
+        public async override Task UpdateTurn(CancellationToken cancellationToken = default)
         {
             if (coreLoopFacade.BattleState != BattleState.Player1)
                 return;
@@ -69,11 +70,12 @@ namespace CitadelShowdown.Citadel
             _dragStartScreenPosition = Input.mousePosition;
             _dragStartScreenPosition.z = 10; // Depth of the Camera
             _dragStartScreenPosition = Camera.main.ScreenToWorldPoint(_dragStartScreenPosition);
-            SpawnProjectile();
         }
 
         private void UpdateDrag()
         {
+            Debug.Log("dRGGA");
+
             Vector3 currentPosition = Input.mousePosition;
             currentPosition.z = 10; // Depth of the Camera
             currentPosition = Camera.main.ScreenToWorldPoint(currentPosition);

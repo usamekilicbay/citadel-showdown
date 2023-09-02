@@ -1,13 +1,16 @@
-﻿using CitadelShowdown.DI;
+﻿using CitadelShowdown.Common.Abstract;
+using CitadelShowdown.DI;
 using UnityEngine;
 using Zenject;
 
 namespace CitadelShowdown.Managers
 {
-    public class TrajectoryManager : MonoBehaviour
+    public class TrajectoryManager : MonoBehaviour, IRenewable
     {
         [Header("Trajectory")]
         [SerializeField] private int numTrajectoryPoints = 10;
+        [Range(0.1f, 3f)]
+        [SerializeField] private float indicatorSpace;
         [SerializeField] private GameObject trajectoryPointPrefab;
         [SerializeField] private GameObject[] trajectoryPoints;
         [SerializeField] private LineRenderer trajectoryLineRenderer;
@@ -20,19 +23,24 @@ namespace CitadelShowdown.Managers
             _coreLoopFacade = coreLoopFacade;
         }
 
-        private void Start()
+        private void Awake()
         {
-            InitializeTrajectoryPoints();
+            Setup();
+        }
 
+        private void Setup()
+        {
             trajectoryLineRenderer = GetComponent<LineRenderer>();
             trajectoryLineRenderer.positionCount = 2;
             trajectoryLineRenderer.enabled = false;
+            InitializeTrajectoryPoints();
+            Renew();
         }
 
         private void InitializeTrajectoryPoints()
         {
             trajectoryPoints = new GameObject[numTrajectoryPoints];
-            for (int i = 0; i < numTrajectoryPoints; i++)
+            for (var i = 0; i < numTrajectoryPoints; i++)
             {
                 trajectoryPoints[i] = Instantiate(trajectoryPointPrefab);
                 trajectoryPoints[i].SetActive(false);
@@ -42,18 +50,18 @@ namespace CitadelShowdown.Managers
         public void UpdateTrajectory(Vector3 throwDirection, float throwForce, Transform attackerTransform)
         {
             // Calculate the number of points to show based on maxDragDistance
-            int numPointsToShow = Mathf.RoundToInt(throwForce / numTrajectoryPoints);
+            var numPointsToShow = Mathf.RoundToInt(throwForce / numTrajectoryPoints);
 
             var lastPos = attackerTransform.position + throwDirection * 2f;
 
-            for (int i = 0; i < numTrajectoryPoints; i++)
+            for (var i = 0; i < numTrajectoryPoints; i++)
             {
-                Vector3 pointPosition = lastPos + throwDirection * 0.5f;
+                var pointPosition = lastPos + throwDirection * indicatorSpace;
                 var trajectoryPoint = trajectoryPoints[i];
                 trajectoryPoint.transform.position = pointPosition;
 
                 // Calculate the rotation to face the throw direction
-                Quaternion rotation = Quaternion.LookRotation(Vector3.forward, throwDirection);
+                var rotation = Quaternion.LookRotation(Vector3.forward, throwDirection);
                 trajectoryPoint.transform.rotation = rotation;
 
                 trajectoryPoint.SetActive(true);
@@ -61,15 +69,15 @@ namespace CitadelShowdown.Managers
             }
 
             // Hide the remaining points
-            for (int i = numTrajectoryPoints - 1; i > numPointsToShow; i--)
+            for (var i = numTrajectoryPoints - 1; i > numPointsToShow; i--)
                 trajectoryPoints[i].SetActive(false);
         }
 
         public void UpdateTrajectoryLine(Vector3 start, Vector3 current)
         {
-            Vector3 dragVector = start - current;
-            float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, _coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
-            Vector3 clampedEnd = start - dragVector.normalized * dragDistance;
+            var dragVector = start - current;
+            var dragDistance = Mathf.Clamp(dragVector.magnitude, 0, _coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
+            var clampedEnd = start - dragVector.normalized * dragDistance;
 
             trajectoryLineRenderer.enabled = true;
             trajectoryLineRenderer.SetPosition(0, start);
@@ -78,19 +86,26 @@ namespace CitadelShowdown.Managers
 
         public Vector3 CalculatePointPosition(Vector3 initialPosition, Vector2 direction, float force, float time)
         {
-            float gravity = Physics2D.gravity.y;
-            Vector2 displacement = direction * force * time + 0.5f * Vector2.up * gravity * time * time;
-            return initialPosition + new Vector3(displacement.x, displacement.y, 0);
+            var gravity = Physics2D.gravity.y;
+            var displacement = force * time * direction + 0.5f * gravity * time * time * Vector2.up;
+            return initialPosition + (Vector3)displacement;
         }
 
         public void HideTrajectory()
         {
-            foreach (GameObject point in trajectoryPoints)
+            var firstPosition = trajectoryPoints[0].transform.position;
+            foreach (var point in trajectoryPoints)
             {
                 point.SetActive(false);
+                point.transform.position = firstPosition;
             }
 
             trajectoryLineRenderer.enabled = false;
+        }
+
+        public void Renew()
+        {
+            HideTrajectory();
         }
     }
 }

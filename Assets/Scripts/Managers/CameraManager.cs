@@ -22,12 +22,8 @@ namespace CitadelShowdown.Managers
             player2CitadelCamera = GameObject.Find("Player 2 Citadel Camera").GetComponent<CinemachineVirtualCamera>();
         }
 
-        public void SwitchToProjectileCamera(Transform target)
+        public void SwitchToProjectileCamera()
         {
-            projectileCamera.transform.SetPositionAndRotation(Vector3.zero, Quaternion.Euler(Vector3.zero));
-            projectileCamera.Follow = target;
-            //projectileCamera.LookAt = target;
-
             player1CitadelCamera.gameObject.SetActive(false);
             player2CitadelCamera.gameObject.SetActive(false);
             projectileCamera.gameObject.SetActive(true);
