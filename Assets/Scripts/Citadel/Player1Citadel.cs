@@ -1,4 +1,5 @@
 using Assets.Scripts.Common.Types;
+using CitadelShowdown.Managers;
 using CitadelShowdown.UI.Citadel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,17 +10,19 @@ namespace CitadelShowdown.Citadel
 {
     public class Player1Citadel : CitadelBase
     {
-        private Vector3 _dragStartScreenPosition;
+        private InputManager _inputManager;
 
         [Inject]
-        public void Construct(UIPlayer1Citadel uiPlayer1Citadel)
+        public void Construct(UIPlayer1Citadel uiPlayer1Citadel,
+            InputManager inputManager)
         {
             uiCitadel = uiPlayer1Citadel;
+            _inputManager = inputManager;
         }
 
         private void Update()
         {
-            if (actionType != ActionType.Attack 
+            if (actionType != ActionType.Attack
                 || coreLoopFacade.BattleState == BattleState.NotFighting)
                 return;
 
@@ -57,45 +60,41 @@ namespace CitadelShowdown.Citadel
             }
 
             if (isDragging)
-            {
                 UpdateDrag();
-                uiCitadel.UpdateThrowForceText(throwForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce);
-                uiCitadel.UpdateThrowAngleText(throwDirection);
-            }
         }
 
         private void OnDragStart()
         {
             isDragging = true;
-            _dragStartScreenPosition = Input.mousePosition;
-            _dragStartScreenPosition.z = 10; // Depth of the Camera
-            _dragStartScreenPosition = Camera.main.ScreenToWorldPoint(_dragStartScreenPosition);
+            _inputManager.SetDragStartPosition();
         }
 
         private void UpdateDrag()
         {
-            Debug.Log("dRGGA");
+            var mouseCurrentPosition = _inputManager.GetMousePosition();
+            var dragVector = _inputManager.GetDragVector();
+            var dragPercentage = _inputManager.GetDragPercentage();
 
-            Vector3 currentPosition = Input.mousePosition;
-            currentPosition.z = 10; // Depth of the Camera
-            currentPosition = Camera.main.ScreenToWorldPoint(currentPosition);
-
-            // Check if the drag distance exceeds the threshold
-            Vector3 dragVector = _dragStartScreenPosition - currentPosition;
-            float dragDistance = Mathf.Clamp(dragVector.magnitude, 0, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
+            if (dragPercentage < configurationManager.MinDragDistance)
+                return;
 
             throwDirection = dragVector.normalized;
-            throwForce = Mathf.Lerp(coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce, coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce, dragDistance / coreLoopFacade.ConfigurationManager.MovementConfigs.MaxDragDistance);
+            Debug.Log($"Dir {throwDirection} ||| Perc: {dragPercentage}");
 
-            var perc = (throwForce - coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce) / (coreLoopFacade.ConfigurationManager.MovementConfigs.MaxThrowForce - coreLoopFacade.ConfigurationManager.MovementConfigs.MinThrowForce) * 100f;
-            //Debug.Log($"%{perc}");
-
-            trajectoryManager.UpdateTrajectoryLine(_dragStartScreenPosition, currentPosition);
-            trajectoryManager.UpdateTrajectory(throwDirection, perc, transform);
+            trajectoryManager.UpdateTrajectoryLine(_inputManager.DragStartPosition, mouseCurrentPosition);
+            trajectoryManager.UpdateTrajectory(throwDirection, dragPercentage, transform);
+            uiCitadel.UpdateThrowForceText(dragPercentage);
+            uiCitadel.UpdateThrowAngleText(throwDirection);
         }
 
         private void OnDragEnd()
         {
+            trajectoryManager.HideTrajectory();
+            throwForce = _inputManager.GetForceByDragPercentage();
+
+            if (throwForce < 0f)
+                return;
+
             isDragging = false;
 
             SpendEnergy((int)(throwForce * 2f)); // Adjust the stamina cost as needed

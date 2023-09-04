@@ -9,6 +9,7 @@ namespace CitadelShowdown.UI.Citadel
     public abstract class UICitadelBase : MonoBehaviour
     {
         [Header("Buttons")]
+        [SerializeField] private GameObject attackButtonParent;
         [SerializeField] private Button regularAttackChooseButton;
         [SerializeField] private Button strongAttackChooseButton;
         [SerializeField] private Button wideAttackChooseButton;
@@ -41,15 +42,19 @@ namespace CitadelShowdown.UI.Citadel
             staminaText.SetText("Energy: " + stamina);
         }
 
+        public void ToggleAttackSelectionButtons(bool toggle)
+        {
+            attackButtonParent.SetActive(toggle);
+        }
+
         public void ToggleIndicators(bool isHidden)
         {
             throwIndicator.SetActive(isHidden);
         }
 
-        public void UpdateThrowForceText(float throwForce, float minThrowForce, float maxThrowForce)
+        public void UpdateThrowForceText(float throwForce)
         {
-            float throwForcePercentage = (throwForce - minThrowForce) / (maxThrowForce - minThrowForce) * 100f;
-            throwForceText.SetText($"{throwForcePercentage:F0}%");
+            throwForceText.SetText($"{throwForce:F0}%");
         }
 
         public void UpdateThrowAngleText(Vector2 throwDirection)

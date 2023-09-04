@@ -80,6 +80,7 @@ namespace CitadelShowdown.ProjectileNamespace
             if (state != ProjectileState.Thrown)
                 return;
 
+            // TODO: Vanish doesn't trigger the battle state change
             if (transform.position.y <= -10f)
                 Vanish();
         }

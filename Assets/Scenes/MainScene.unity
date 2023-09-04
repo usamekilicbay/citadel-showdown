@@ -1633,7 +1633,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.4999288, g: 0.5997467, b: 0.8773585, a: 1}
+  m_BackGroundColor: {r: 0.9339623, g: 0.9045104, b: 0.77007836, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1683,7 +1683,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 5, z: -10}
+  m_LocalPosition: {x: 15, y: 2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4000,7 +4000,7 @@ MonoBehaviour:
   m_Follow: {fileID: 978906789}
   m_Lens:
     FieldOfView: 34
-    OrthographicSize: 10
+    OrthographicSize: 7
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -4026,7 +4026,7 @@ Transform:
   m_GameObject: {fileID: 1311260897}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: 5, z: -10}
+  m_LocalPosition: {x: -15, y: 2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5731,7 +5731,7 @@ Transform:
   m_GameObject: {fileID: 1816149732}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 5, z: -10}
+  m_LocalPosition: {x: 15, y: 2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6256,6 +6256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852c72f245131b94ab5b717c483d6e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackButtonParent: {fileID: 574760818}
   regularAttackChooseButton: {fileID: 162288978}
   strongAttackChooseButton: {fileID: 2107125995}
   wideAttackChooseButton: {fileID: 2017625895}
@@ -6694,6 +6695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3826ee12ab30e38449f660c73b3d83a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackButtonParent: {fileID: 829999684}
   regularAttackChooseButton: {fileID: 1322593616}
   strongAttackChooseButton: {fileID: 2112395037}
   wideAttackChooseButton: {fileID: 1487267624}
@@ -6708,9 +6710,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 36594497}
   - {fileID: 61196475}
-  - {fileID: 676489717}
   - {fileID: 1311260899}
   - {fileID: 1816149735}
+  - {fileID: 676489717}
   - {fileID: 519420032}
   - {fileID: 1981231720}
   - {fileID: 1575700715}

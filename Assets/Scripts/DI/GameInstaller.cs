@@ -83,6 +83,10 @@ namespace CitadelShowdown.DI
                 .AsSingle();
 
             Container
+                .Bind<InputManager>()
+                .AsSingle();
+
+            Container
               .Bind<AttackManager>()
               .AsSingle();
 

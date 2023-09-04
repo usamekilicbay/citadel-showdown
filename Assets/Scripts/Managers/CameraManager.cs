@@ -15,8 +15,11 @@ namespace CitadelShowdown.Managers
         [SerializeField] CinemachineVirtualCamera player1CitadelCamera;
         [SerializeField] CinemachineVirtualCamera player2CitadelCamera;
 
+        private Camera _mainCamera;
+
         private void Awake()
         {
+            _mainCamera = Camera.main;
             projectileCamera = GameObject.Find("Projectile Camera").GetComponent<CinemachineVirtualCamera>();
             player1CitadelCamera = GameObject.Find("Player 1 Citadel Camera").GetComponent<CinemachineVirtualCamera>();
             player2CitadelCamera = GameObject.Find("Player 2 Citadel Camera").GetComponent<CinemachineVirtualCamera>();

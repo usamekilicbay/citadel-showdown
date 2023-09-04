@@ -47,14 +47,17 @@ namespace CitadelShowdown.Managers
             }
         }
 
-        public void UpdateTrajectory(Vector3 throwDirection, float throwForce, Transform attackerTransform)
+        public void UpdateTrajectory(Vector3 throwDirection, float forcePercentage, Transform attackerTransform)
         {
-            // Calculate the number of points to show based on maxDragDistance
-            var numPointsToShow = Mathf.RoundToInt(throwForce / numTrajectoryPoints);
+            foreach (var trajectoryPoint in trajectoryPoints)
+                trajectoryPoint.SetActive(false);
+
+            // Calculate the number of points to show based on force
+            var numPointsToShow = Mathf.Floor(forcePercentage / numTrajectoryPoints);
 
             var lastPos = attackerTransform.position + throwDirection * 2f;
 
-            for (var i = 0; i < numTrajectoryPoints; i++)
+            for (var i = 0; i < numPointsToShow; i++)
             {
                 var pointPosition = lastPos + throwDirection * indicatorSpace;
                 var trajectoryPoint = trajectoryPoints[i];
@@ -67,10 +70,6 @@ namespace CitadelShowdown.Managers
                 trajectoryPoint.SetActive(true);
                 lastPos = pointPosition;
             }
-
-            // Hide the remaining points
-            for (var i = numTrajectoryPoints - 1; i > numPointsToShow; i--)
-                trajectoryPoints[i].SetActive(false);
         }
 
         public void UpdateTrajectoryLine(Vector3 start, Vector3 current)
@@ -88,12 +87,14 @@ namespace CitadelShowdown.Managers
         {
             var gravity = Physics2D.gravity.y;
             var displacement = force * time * direction + 0.5f * gravity * time * time * Vector2.up;
+
             return initialPosition + (Vector3)displacement;
         }
 
         public void HideTrajectory()
         {
             var firstPosition = trajectoryPoints[0].transform.position;
+
             foreach (var point in trajectoryPoints)
             {
                 point.SetActive(false);

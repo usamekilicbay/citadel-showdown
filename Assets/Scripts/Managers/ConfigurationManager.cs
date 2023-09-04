@@ -12,6 +12,17 @@ namespace CitadelShowdown.Managers
         [field: SerializeField] public AttackConfigs AttackConfigs { get; private set; }
         [field: SerializeField] public MovementConfigs MovementConfigs { get; private set; }
 
+        public float MinDragDistance 
+            => MovementConfigs.MinDragDistance;
+        public float MaxDragDistance
+            => MovementConfigs.MaxDragDistance;
+        public float MinThrowForce
+            => MovementConfigs.MinThrowForce;
+        public float MaxThrowForce
+            => MovementConfigs.MaxThrowForce;
+
+        #region Config Load
+
         private const string _folderPath = "Assets/Configs"; // Specify the complete folder path containing the ScriptableObjects
 
         [ContextMenu("Load Configs")]
@@ -39,5 +50,7 @@ namespace CitadelShowdown.Managers
                 }
             }
         }
+
+        #endregion
     }
 }

@@ -30,19 +30,25 @@ namespace CitadelShowdown.Citadel
         protected UICitadelBase uiCitadel;
         protected CoreLoopFacade coreLoopFacade { get; private set; }
         protected TrajectoryManager trajectoryManager { get; private set; }
+        protected CameraManager cameraManager { get; private set; }
+        protected ConfigurationManager configurationManager { get; private set; }
 
 
         [Inject]
         public void Construct(CoreLoopFacade coreLoopFacade,
             Projectile projectile,
-            TrajectoryManager trajectoryManager)
+            TrajectoryManager trajectoryManager,
+            CameraManager cameraManager,
+            ConfigurationManager configurationManager)
         {
             this.coreLoopFacade = coreLoopFacade;
             this.projectile = projectile;
             this.trajectoryManager = trajectoryManager;
+            this.cameraManager = cameraManager;
+            this.configurationManager = configurationManager;
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             collider = GetComponent<Collider2D>();
 
@@ -67,7 +73,7 @@ namespace CitadelShowdown.Citadel
 
         public void Setup()
         {
-            Renew();
+            //Renew();
         }
 
         public void Renew()
@@ -77,11 +83,19 @@ namespace CitadelShowdown.Citadel
             uiCitadel.UpdateHealthText(currentHealth);
             uiCitadel.UpdateEnergyText(currentEnergy);
             uiCitadel.ToggleIndicators(false);
+            uiCitadel.ToggleAttackSelectionButtons(false);
+
+            Debug.Log("Oooo   " + gameObject.name);
         }
 
         public async virtual Task UpdateTurn(CancellationToken cancellationToken = default)
         {
             await Task.FromResult(actionType = ActionType.Select);
+
+            uiCitadel.ToggleAttackSelectionButtons(true);
+
+            Debug.Log("Oooowww shieeet   " + gameObject.name);
+
 
             RenewEnergy();
         }
@@ -96,6 +110,8 @@ namespace CitadelShowdown.Citadel
 
         public async virtual Task SetAttackType(AttackType attackType, CancellationToken cancellationToken = default)
         {
+            uiCitadel.ToggleAttackSelectionButtons(false);
+
             currentAttack = attackType;
             SpawnProjectile();
             actionType = ActionType.Attack;

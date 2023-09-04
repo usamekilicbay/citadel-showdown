@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048613aa2c67eee409bf432b258d3b1b, type: 3}
   m_Name: MovementConfigs
   m_EditorClassIdentifier: 
-  maxDragDistance: 3
-  maxThrowForce: 20
-  minThrowForce: 2
+  <MinDragDistance>k__BackingField: 0.5
+  <MaxDragDistance>k__BackingField: 3
+  <MinThrowForce>k__BackingField: 10
+  <MaxThrowForce>k__BackingField: 50
