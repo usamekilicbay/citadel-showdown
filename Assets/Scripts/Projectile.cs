@@ -80,9 +80,8 @@ namespace CitadelShowdown.ProjectileNamespace
             if (state != ProjectileState.Thrown)
                 return;
 
-            // TODO: Vanish doesn't trigger the battle state change
             if (transform.position.y <= -10f)
-                Vanish();
+                Vanish(true);
         }
 
         private void FixedUpdate()
@@ -103,20 +102,20 @@ namespace CitadelShowdown.ProjectileNamespace
             if (state == ProjectileState.Vanished)
                 return;
 
-            Vanish();
+            Vanish(false);
 
             Debug.Log(collider.name);
 
-            var isGameOver = false;
-
             if (collider.gameObject.TryGetComponent(out CitadelBase targetCitadel))
-                isGameOver = await targetCitadel.TakeDamageAsync(_attack.Damage);
+            {
+                var isGameOver = await targetCitadel.TakeDamageAsync(_attack.Damage);
 
-            if (!isGameOver)
-                _coreLoopFacade.SwitchTurn();
+                if (!isGameOver)
+                    _coreLoopFacade.SwitchTurn();
+            }
         }
 
-        private async void Vanish()
+        private async void Vanish(bool isFall)
         {
             Time.timeScale = 1f;
 
@@ -125,6 +124,9 @@ namespace CitadelShowdown.ProjectileNamespace
             rb.velocity = Vector2.zero;
             spriteRenderer.enabled = false;
             await _coreLoopFacade.GameManager.MMFPlayerProjectile.PlayFeedbacksTask(transform.position);
+
+            if (isFall)
+                _coreLoopFacade.SwitchTurn();
         }
 
         private void OnDrawGizmos()
