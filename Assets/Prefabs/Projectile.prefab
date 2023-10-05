@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8160413861768858002}
   - component: {fileID: -7309695104613333675}
   - component: {fileID: 2767534638184804081}
-  - component: {fileID: 2973283454655725999}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -32,7 +31,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 6087633050644626648}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8160413861768858002
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 927577515
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 61e387e2326f5744ea7f96b39d2a2ad3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -104,8 +104,9 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 0
-  radius: 0.5
+  radius: 1
   state: 0
+  _trailEffect: {fileID: 0}
 --- !u!50 &2767534638184804081
 Rigidbody2D:
   serializedVersion: 4
@@ -133,38 +134,65 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &2973283454655725999
-CircleCollider2D:
+--- !u!1001 &9152996244570592419
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2309629511705724632}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2024942811776225969}
+    m_Modifications:
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.663
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870605479005109098, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+      propertyPath: m_Name
+      value: TrailEffect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+--- !u!4 &6087633050644626648 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3134056291056806011, guid: 02d4dd8d8fac87f4b9c1d958b7a923d3, type: 3}
+  m_PrefabInstance: {fileID: 9152996244570592419}
+  m_PrefabAsset: {fileID: 0}

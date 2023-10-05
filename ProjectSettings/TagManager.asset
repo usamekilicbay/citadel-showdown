@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Environment
+    uniqueID: 3655553763
+    locked: 0
+  - name: Cidatel
+    uniqueID: 772098665
+    locked: 0
+  - name: Projectile
+    uniqueID: 927577515
+    locked: 0
+  - name: UI
+    uniqueID: 2687923785
+    locked: 0
+  - name: VFX
+    uniqueID: 2092398541
+    locked: 0

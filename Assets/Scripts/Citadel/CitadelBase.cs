@@ -130,7 +130,7 @@ namespace CitadelShowdown.Citadel
 
             var launchPos = transform.position;
             launchPos.y += 2f;
-            projectile.UpdateThisBaby(launchPos, currentAttack);
+            projectile.Spawn(launchPos, currentAttack);
         }
 
         protected virtual void ThrowProjectile()

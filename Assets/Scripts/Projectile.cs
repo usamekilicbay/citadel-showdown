@@ -13,12 +13,11 @@ namespace CitadelShowdown.ProjectileNamespace
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private float radius = 0.5f;
-
-        private bool hasReachedPeak = false;
-        private float lastVelocityY = 0f;
-
         [SerializeField] private ProjectileState state;
 
+        [SerializeField] private ParticleSystem _trailEffect;
+        private bool _hasReachedPeak = false;
+        private float _lastVelocityY = 0f;
         private Attack _attack;
 
         private CoreLoopFacade _coreLoopFacade;
@@ -41,26 +40,29 @@ namespace CitadelShowdown.ProjectileNamespace
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             rb = GetComponent<Rigidbody2D>();
+            _trailEffect = GetComponentInChildren<ParticleSystem>();
             Renew();
         }
 
-        public void UpdateThisBaby(Vector2 launchPos, AttackType attackType)
+        public void Spawn(Vector2 launchPos, AttackType attackType)
         {
             _attack = _coreLoopFacade.AttackManager.GetAttack(attackType);
             transform.position = launchPos;
             Renew();
             spriteRenderer.enabled = true;
+            _trailEffect.Play();
         }
 
         public void Renew()
         {
-            var layer = _coreLoopFacade.BattleState == BattleState.Player1
+            var layer = _coreLoopFacade.BattleState ==  BattleState.Player1
                 ? 7 // Set the layer number for Player1
                 : 6; // Set the layer number for Player2
 
             // Create a LayerMask using the layer number
             layerMask = (1 << layer) | (1 << 8); // Add layer 8 to the LayerMask
 
+            _trailEffect.Stop();
             spriteRenderer.enabled = false;
             rb.gravityScale = 0;
             state = ProjectileState.Respawned;
